@@ -126,9 +126,47 @@
     if(x.ch&&x.ch!=='—'){ nums(x.ch).forEach(function(n){ if(n>CUR) return; var b=el('a','chl','гл. '+n); b.href='#ch-'+n; top.appendChild(b); }); }
     c.appendChild(top); c.appendChild(el('h3',null,x.title)); c.appendChild(el('p',null,x.text));
     if(x.novel){ var p=el('p','novel'); p.appendChild(el('b',null,'В романе. ')); p.appendChild(document.createTextNode(x.novel)); c.appendChild(p); }
+    if(x.img) c.insertBefore(figure(x.img),c.firstChild);
     return c;
   }
+  // картинки: Wikimedia Commons, Special:FilePath отдаёт превью нужной ширины
+  var COM='https://commons.wikimedia.org/wiki/';
+  function figure(im){
+    var f=el('figure','wimg'), a=el('a'); a.href=COM+'File:'+encodeURIComponent(im.file.replace(/ /g,'_')); a.target='_blank'; a.rel='noopener';
+    var img=el('img'); img.loading='lazy'; img.decoding='async'; img.alt=im.cap||''; img.src=COM+'Special:FilePath/'+encodeURIComponent(im.file)+'?width=640';
+    img.addEventListener('error',function(){ f.remove(); }); a.appendChild(img); f.appendChild(a);
+    var fc=el('figcaption'); if(im.cap) fc.appendChild(el('span',null,im.cap)); var cr=el('a','credit',im.credit||'Wikimedia Commons'); cr.href=a.href; cr.target='_blank'; cr.rel='noopener'; fc.appendChild(cr); f.appendChild(fc);
+    return f;
+  }
+  // карты: SVG из img/, вставляем инлайн, чтобы работали цвета темы
+  var svgCache={};
+  function loadSvg(url,box){
+    (svgCache[url]=svgCache[url]||fetch(url).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); }))
+      .then(function(t){ box.innerHTML=t; box.dispatchEvent(new Event('svgready')); }).catch(function(){ box.textContent='Карта не загрузилась.'; });
+  }
+  function mapBlock(M){
+    var blk=el('div','block map-block'); blk.id='map-'+M.id; var hd=el('header'); hd.appendChild(el('h3',null,M.title)); if(M.lead) hd.appendChild(el('p','lead',M.lead)); blk.appendChild(hd);
+    var wrap=el('div','map-wrap'), box=el('div','map-svg'); wrap.appendChild(box);
+    var ol=el('ol','map-legend');
+    M.points.forEach(function(p){ var li=el('li'); li.dataset.n=p.n; li.tabIndex=0; li.appendChild(el('span','pin',String(p.n)));
+      var t=el('div'); t.appendChild(el('b',null,p.name)); t.appendChild(document.createTextNode(' '+p.text));
+      var cs=nums(p.ch).filter(function(n){ return n<=CUR; }); if(cs.length){ var w=el('span','chs'); cs.forEach(function(n){ var b=el('a','chl','гл. '+n); b.href='#ch-'+n; w.appendChild(b); }); t.appendChild(w); }
+      li.appendChild(t); ol.appendChild(li); });
+    wrap.appendChild(ol); blk.appendChild(wrap);
+    function hl(n){ Array.prototype.forEach.call(box.querySelectorAll('.map-pin'),function(g){ g.classList.toggle('on',g.dataset.n===String(n)); });
+      Array.prototype.forEach.call(ol.children,function(li){ li.classList.toggle('on',li.dataset.n===String(n)); }); }
+    ol.addEventListener('click',function(e){ var li=e.target.closest('li'); if(li&&!e.target.closest('a')) hl(li.dataset.n); });
+    ol.addEventListener('keydown',function(e){ var li=e.target.closest('li'); if(li&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); hl(li.dataset.n); } });
+    box.addEventListener('click',function(e){ var g=e.target.closest&&e.target.closest('.map-pin'); if(!g) return; hl(g.dataset.n); var li=ol.querySelector('li[data-n="'+g.dataset.n+'"]'); if(li&&li.scrollIntoView) li.scrollIntoView({block:'nearest',behavior:'smooth'}); });
+    var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); loadSvg(M.svg,box); } },{rootMargin:'300px'}):null;
+    if(io) io.observe(box); else loadSvg(M.svg,box);
+    return blk;
+  }
   var W=D.world||[], wsec=document.getElementById('w-sections'), wch=document.getElementById('w-chips');
+  var MAPS=D.maps||[];
+  if(MAPS.length){ var mb=el('button','chip','Карты'); mb.type='button'; mb.appendChild(el('span','n',String(MAPS.length)));
+    mb.addEventListener('click',function(){ var t=document.getElementById('map-'+MAPS[0].id); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); wch.appendChild(mb);
+    MAPS.forEach(function(M){ wsec.appendChild(mapBlock(M)); }); }
   W.forEach(function(s){
     var b=el('button','chip',s.title); b.type='button'; b.appendChild(el('span','n',String(s.items.length)));
     b.addEventListener('click',function(){ var t=document.getElementById('w-'+s.id); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); wch.appendChild(b);
@@ -136,7 +174,13 @@
     var l=el('div','wlist'); s.items.forEach(function(x){ l.appendChild(worldCard(x)); }); blk.appendChild(l); wsec.appendChild(blk);
   });
   function worldFor(n){ var out=[]; W.forEach(function(s){ s.items.forEach(function(x){ if(x.ch&&nums(x.ch).indexOf(n)>-1) out.push(x); }); }); return out; }
-  var _rc=renderChapter; renderChapter=function(n){ _rc(n); var ws=worldFor(n), wl=document.getElementById('ch-world'); wl.textContent=''; document.getElementById('ch-w-block').hidden=!ws.length; ws.forEach(function(x){ wl.appendChild(worldCard(x)); }); };
+  var _rc=renderChapter; renderChapter=function(n){ _rc(n); var ws=worldFor(n), wl=document.getElementById('ch-world'); wl.textContent=''; document.getElementById('ch-w-block').hidden=!ws.length; ws.forEach(function(x){ wl.appendChild(worldCard(x)); });
+    var mp=document.getElementById('ch-maps'); mp.textContent=''; var any=false;
+    MAPS.forEach(function(M){ var ps=M.points.filter(function(p){ return nums(p.ch).indexOf(n)>-1; }); if(!ps.length) return; any=true;
+      var a=el('a','map-hint'); a.href='#world'; a.dataset.map=M.id; a.appendChild(el('span','eyebrow',M.title)); a.appendChild(el('span',null,ps.map(function(p){ return p.name; }).join(' · ')+' →')); mp.appendChild(a); });
+    if(any) document.getElementById('ch-w-block').hidden=false; };
+  document.getElementById('ch-maps').addEventListener('click',function(e){ var a=e.target.closest('a.map-hint'); if(!a) return; e.preventDefault(); var id=a.dataset.map; go('world');
+    setTimeout(function(){ var t=document.getElementById('map-'+id); if(t) t.scrollIntoView({block:'start'}); },150); });
 
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
   var tabs=['chapter','quotes','meanings','people','story','world'];
