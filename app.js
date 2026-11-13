@@ -133,7 +133,7 @@
   var COM='https://commons.wikimedia.org/wiki/';
   function figure(im){
     var f=el('figure','wimg'), a=el('a'); a.href=COM+'File:'+encodeURIComponent(im.file.replace(/ /g,'_')); a.target='_blank'; a.rel='noopener';
-    var img=el('img'); img.loading='lazy'; img.decoding='async'; img.alt=im.cap||''; img.src=COM+'Special:FilePath/'+encodeURIComponent(im.file)+'?width=640';
+    var img=el('img'); img.loading='lazy'; img.decoding='async'; img.alt=im.cap||''; img.src=im.src||(COM+'Special:FilePath/'+encodeURIComponent(im.file)+'?width=640');
     img.addEventListener('error',function(){ f.remove(); }); a.appendChild(img); f.appendChild(a);
     var fc=el('figcaption'); if(im.cap) fc.appendChild(el('span',null,im.cap)); var cr=el('a','credit',im.credit||'Wikimedia Commons'); cr.href=a.href; cr.target='_blank'; cr.rel='noopener'; fc.appendChild(cr); f.appendChild(fc);
     return f;
