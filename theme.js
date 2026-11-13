@@ -2,7 +2,7 @@
   var KEY='eoe-theme-mode';
   var T={
     light:{name:'Светлая',hint:'белый фон',bg:'#f5f5f5',ink:'#1a1a1a'},
-    sepia:{name:'Сепия',hint:'тёплая бумага',bg:'#f3ead6',ink:'#3a2e21'},
+    sepia:{name:'Сепия',hint:'светлый кофе',bg:'#efe7dd',ink:'#3a2f28'},
     gray:{name:'Серая',hint:'мягкий контраст',bg:'#e2e2df',ink:'#2a2a2a'},
     dark:{name:'Тёмная',hint:'чёрный фон',bg:'#121212',ink:'#e8e8e8'},
     night:{name:'Ночная сепия',hint:'читать в темноте',bg:'#1c1711',ink:'#e4d6bc'},
