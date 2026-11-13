@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Дневник «К востоку от Эдема»</title>
+<meta name="description" content="Читательский спутник к роману Стейнбека: главы, цитаты, контекст, смыслы, герои и сюжет — без спойлеров.">
+<meta name="theme-color" content="#f5f5f5">
+<script>(function(){var m='light';try{m=localStorage.getItem('eoe-theme-mode')||'light';}catch(e){}if(m!=='auto')document.documentElement.setAttribute('data-theme',m);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="top-row"><p class="eyebrow">Дневник чтения · Стейнбек, 1952</p><button class="theme-btn" id="theme-btn" type="button" aria-label="Тема оформления"></button></div>
+    <div class="brand">
+      <h1>К востоку <em>от Эдема</em></h1>
+      <button class="where-pill" id="where-pill" type="button"></button>
+    </div>
+    <div class="progress"><div class="bar"><i id="bar"></i></div><span id="pct"></span></div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="Разделы">
+  <div class="in">
+    <a href="#chapter" data-tab="chapter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5C4.7 20 4 19.3 4 18.5z"/><path d="M13 4h5.5c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5H13z"/></svg>Глава</a>
+    <a href="#quotes" data-tab="quotes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4c0 3-1.5 5-4 6"/><path d="M14 7h4v4c0 3-1.5 5-4 6"/></svg>Цитаты</a>
+    <a href="#meanings" data-tab="meanings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Смыслы</a>
+    <a href="#people" data-tab="people"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 13.2c2.8.4 5 2.8 5 5.8"/></svg>Герои</a>
+    <a href="#story" data-tab="story"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/></svg>Сюжет</a>
+  </div>
+</nav>
+
+<main>
+  <!-- ГЛАВА -->
+  <section class="view" id="v-chapter" data-view="chapter">
+    <div class="wrap">
+      <div class="chips" id="ch-chips" role="group" aria-label="Главы"></div>
+      <div class="ch-head">
+        <p class="eyebrow" id="ch-eyebrow"></p>
+        <h2 id="ch-title"></h2>
+      </div>
+      <div class="block"><ul class="summary" id="ch-summary"></ul><p class="boundary" id="ch-boundary" hidden></p></div>
+      <div class="block" id="ch-ctx-block"><header><h3>Контекст</h3><p class="lead">История и реалии главы. <span class="kind fact">Факт</span> отдельно от <span class="kind reading">Трактовки</span>.</p></header><div class="card"><ul class="ctx-list" id="ch-ctx"></ul></div></div>
+      <div class="block" id="ch-q-block"><header><h3>Цитаты главы</h3></header><div class="quotes" id="ch-quotes"></div></div>
+      <div class="block" id="ch-m-block"><header><h3>Смыслы в этой главе</h3></header><div class="mean" id="ch-mean"></div></div>
+      <div class="ch-nav"><button type="button" id="ch-prev">← Предыдущая</button><button type="button" id="ch-next">Следующая →</button></div>
+    </div>
+  </section>
+
+  <!-- ЦИТАТЫ -->
+  <section class="view" id="v-quotes" data-view="quotes" hidden>
+    <div class="wrap">
+      <div class="block">
+        <header><h2>Цитаты</h2><p class="lead">Мои хайлайты из Kindle и подборка Claude (пунктирная линия). Под каждой — контекст и комментарий.</p></header>
+        <div class="chips" id="q-chips" role="group" aria-label="Темы"></div>
+        <div class="quotes" id="qlist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- СМЫСЛЫ -->
+  <section class="view" id="v-meanings" data-view="meanings" hidden>
+    <div class="wrap">
+      <div class="block">
+        <header><h2>Смыслы</h2><p class="lead">Символы и мотивы с привязкой к тексту. У каждого несколько прочтений, правильного нет.</p></header>
+        <div class="mean" id="mean"></div>
+      </div>
+      <div class="block">
+        <header><h3>Спор критиков</h3><p class="lead">Условные голоса, не реальные критики. Для разогрева клуба.</p></header>
+        <div class="quotes" id="deb"></div>
+      </div>
+      <div class="block">
+        <header><h3>Вопросы для клуба</h3></header>
+        <ol class="qs" id="qs"></ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ГЕРОИ -->
+  <section class="view" id="v-people" data-view="people" hidden>
+    <div class="wrap">
+      <div class="block">
+        <header><h2>Мои герои</h2><p class="lead">Как меняется моё отношение. В конце книги сравню с финалом.</p></header>
+        <div class="att" id="att"></div>
+        <div class="card"><h3>Гипотезы</h3><div class="scroll"><table class="plain"><tbody id="hyp"></tbody></table></div></div>
+        <p class="hint">Пишу мысли в чат — они появляются здесь с датой и главой.</p>
+      </div>
+      <div class="block">
+        <header><h3>Кто есть кто</h3></header>
+        <input class="search" id="cast-q" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" autocomplete="off">
+        <div id="cast-list" style="display:flex;flex-direction:column;gap:16px"></div>
+      </div>
+      <div class="block">
+        <header><h3>Семьи</h3><p class="lead">Только то, что названо в тексте. Пунктир — человек есть, но имени нет.</p></header>
+        <div class="families">
+        <article class="fam" aria-label="Гамильтоны">
+          <h3>Гамильтоны <small>Северная Ирландия → Салинас-Валли</small></h3>
+          <div class="gen">
+            <div class="couple">
+              <div class="p ham"><strong>Самюэл Гамильтон</strong><span>кузнец, бурит колодцы, изобретатель, принимает роды; разоряется на патентах, «без денег против денег не воюют»</span></div>
+              <span class="eq">⚭</span>
+              <div class="p ham"><strong>Лиза Гамильтон</strong><span>строгая пресвитерианка, знает Библию наизусть; ненавидит спиртное; уважаема, но не любима</span></div>
+            </div>
+            <p class="marr">поселились ≈1870 к востоку от Кинг-Сити · 1760 акров сухой земли без воды</p>
+          </div>
+          <div class="gen">
+            <p class="marr">4 сына</p>
+            <div class="couple">
+              <div class="p ham"><strong>Джордж</strong><span>мягкий, безгрешный, всегда опрятен</span></div>
+              <div class="p ham"><strong>Уилл</strong><span>консерватор и баловень удачи: магазины, «форды», богатство</span></div>
+              <div class="p ham"><strong>Том</strong><span>весь в отца: изобретатель, буйная радость и скорбь</span></div>
+              <div class="p ham"><strong>Джо</strong><span>мечтатель и любимец, потерял 60 овец; пойдёт в колледж</span></div>
+            </div>
+            <p class="marr">5 дочерей · порядок рождения рассказчик сам путает</p>
+            <div class="couple">
+              <div class="p ham"><strong>Уна</strong><span>темноволосая, серьёзная, пытливый ум</span></div>
+              <div class="p ham"><strong>Лиззи</strong><span>названа в честь матери; рано вышла замуж и уехала; «умела ненавидеть»</span></div>
+              <div class="p ham"><strong>Десси</strong><span>хохотушка, учится на портниху</span></div>
+              <div class="p ham"><strong>Оливия</strong><span>мать рассказчика; готовится в учительницы</span></div>
+              <div class="p ham"><strong>Молли</strong><span>младшая красавица; Том подрезал ей уздечку языка</span></div>
+            </div>
+          </div>
+          <div class="gen">
+            <div class="p ham"><strong>Рассказчик, «я»</strong><span>сын Оливии, внук Самюэла и Лизы</span></div>
+          </div>
+          <p class="fam-note">Прототипы реальные: Оливия Гамильтон — мать Стейнбека, Самюэл — его дед.</p>
+        </article>
+
+        <article class="fam" aria-label="Траски">
+          <h3>Траски <small>Коннектикут</small></h3>
+          <div class="gen">
+            <div class="p tra"><strong>Сайрус Траск</strong><span>выдумал себе героическую войну; секретарь СВР в Вашингтоне, «сенатор» для портье. † февраль 1894, воспаление лёгких; оставил больше $100 000 неизвестно откуда; по послужному списку не был ни в одном большом сражении</span></div>
+          </div>
+          <div class="gen">
+            <div class="couple">
+              <div class="p tra unk"><strong>Миссис Траск</strong><span>1-я жена; теософия, потом «бог-мститель»; утопилась в пруду</span></div>
+              <div class="p tra"><strong>Алиса Траск</strong><span>2-я жена; тайком улыбается и молча болеет; умерла от чахотки, пока Адам в армии</span></div>
+            </div>
+            <p class="marr">обе — жёны Сайруса · второй брак через месяц после смерти первой жены</p>
+          </div>
+          <div class="gen">
+            <div class="couple">
+              <div class="p tra"><strong>Адам</strong><span>сын 1-й жены, род. 1862; 10 лет в кавалерии (капрал), медаль; бродяга, каторга во Флориде, побег; в 1894 вернулся на ферму</span></div>
+              <div class="p tra"><strong>Карл</strong><span>сын Алисы, на год младше; дважды избил Адама; один на ферме, расширил её; тёмный шрам на лбу («будто клеймом пометили»)</span></div>
+            </div>
+            <p class="marr">наследство отца делится между братьями поровну</p>
+          </div>
+        </article>
+      </div>
+      <p class="bridge"><b>Где семьи сходятся.</b> Конец главы 2: среди состоятельных переселенцев, купивших хорошую землю в Долине, был Адам Траск. В главах 3–7 Адам в армии, в бегах и снова на ферме в Коннектикуте.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЮЖЕТ -->
+  <section class="view" id="v-story" data-view="story" hidden>
+    <div class="wrap">
+      <div class="block">
+        <header><h2>Сюжетные линии</h2><p class="lead">Где каждая линия остановилась к текущему месту.</p></header>
+        <div class="quotes" id="lines"></div>
+      </div>
+      <div class="block">
+        <header><h3>Хронология</h3><p class="lead">Даты из текста; расчётные годы помечены.</p></header>
+        <div class="legend"><span style="--c:var(--valley)">Долина</span><span style="--c:var(--poppy)">Гамильтоны</span><span style="--c:var(--lupine)">Траски</span></div>
+        <ol class="tl" id="tl"></ol>
+      </div>
+      <div class="block">
+        <header><h3>Журнал чтения</h3></header>
+        <div class="scroll"><table class="plain"><thead><tr><th>Дата</th><th>Где</th><th>Что добавлено</th></tr></thead><tbody id="logrows"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="theme.js"></script>
+<script src="app.js" defer></script>
+</body>
+</html>
