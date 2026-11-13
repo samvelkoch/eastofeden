@@ -10,7 +10,7 @@ img{max-width:100%}
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --tabbar-h:64px; --fs:1.0625rem; --measure:68ch; --gut:clamp(16px,4vw,32px);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme:dark){:root:not([data-theme]){
   --bg:#121212; --surface:#1b1b1b; --ink:#e8e8e8; --muted:#a8a8a8; --rule:#2e2e2e;
   --lupine:#e8e8e8; --lupine-soft:#2a2a2a; --poppy:#8f8f8f; --poppy-soft:#242424; --valley:#4d4d4d; color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -224,7 +224,9 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 .wimg figcaption{font-size:.86rem;line-height:1.5;color:var(--muted);display:flex;flex-direction:column;gap:2px}
 .wimg .credit{font:400 .74rem/1.4 var(--f-mono);color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--rule);align-self:flex-start}
 :root[data-theme="dark"] .wimg img{filter:grayscale(1) brightness(.88)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wimg img{filter:grayscale(1) brightness(.88)}}
+:root[data-theme="sepia"] .wimg img{filter:grayscale(1) sepia(.35) contrast(1.02)}
+:root[data-theme="night"] .wimg img{filter:grayscale(1) sepia(.4) brightness(.82)}
+@media (prefers-color-scheme:dark){:root:not([data-theme]) .wimg img{filter:grayscale(1) brightness(.88)}}
 
 /* Карты */
 .map-wrap{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
@@ -268,3 +270,20 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 .lb-cap{max-width:68ch;color:#e8e8e8;font-size:.9rem;line-height:1.5;display:flex;flex-direction:column;gap:4px;text-align:center}
 .lb-cap a{color:#a8a8a8;font:400 .74rem/1.4 var(--f-mono);text-decoration:none;border-bottom:1px dotted #555;align-self:center}
 .lb-x{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:1.2rem;cursor:pointer}
+
+/* Читательские темы: сепия, серая «бумага», ночная сепия */
+:root[data-theme="sepia"]{
+  --bg:#f3ead6; --surface:#faf4e6; --ink:#3a2e21; --muted:#6c5b46; --rule:#e0d3b6;
+  --lupine:#3a2e21; --lupine-soft:#ebdfc3; --poppy:#8a7556; --poppy-soft:#efe5cf; --valley:#cbb894}
+:root[data-theme="gray"]{
+  --bg:#e2e2df; --surface:#ececea; --ink:#2a2a2a; --muted:#5c5c5a; --rule:#cdcdca;
+  --lupine:#2a2a2a; --lupine-soft:#d7d7d4; --poppy:#787876; --poppy-soft:#dadad7; --valley:#b3b3b0}
+:root[data-theme="night"]{
+  --bg:#1c1711; --surface:#251f18; --ink:#e4d6bc; --muted:#a6957a; --rule:#3a3127;
+  --lupine:#e4d6bc; --lupine-soft:#322920; --poppy:#8f7f64; --poppy-soft:#2b231b; --valley:#5a4b38; color-scheme:dark}
+.theme-wrap{position:relative}
+.theme-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:40;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.18);display:flex;flex-direction:column;min-width:220px}
+.theme-menu button{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:6px 10px;border:0;border-radius:10px;background:none;color:var(--ink);font-size:.95rem;text-align:left;cursor:pointer}
+.theme-menu button[aria-checked="true"]{background:var(--lupine-soft);font-weight:600}
+.theme-menu .sw{width:30px;height:30px;border-radius:8px;border:1px solid rgba(0,0,0,.15);display:grid;place-items:center;font:600 .8rem var(--f-display);flex:none}
+.theme-menu small{display:block;color:var(--muted);font-size:.76rem;font-weight:400}
