@@ -31,6 +31,7 @@
     <a href="#meanings" data-tab="meanings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Смыслы</a>
     <a href="#people" data-tab="people"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 13.2c2.8.4 5 2.8 5 5.8"/></svg>Герои</a>
     <a href="#story" data-tab="story"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h13"/></svg>Сюжет</a>
+    <a href="#world" data-tab="world"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.4 3.6 8.5s-1.1 5.9-3.6 8.5M12 3.5C9.5 6.1 8.4 8.9 8.4 12s1.1 5.9 3.6 8.5"/></svg>Мир</a>
   </div>
 </nav>
 
@@ -47,6 +48,7 @@
       <div class="block" id="ch-ctx-block"><header><h3>Контекст</h3><p class="lead">История и реалии главы. <span class="kind fact">Факт</span> отдельно от <span class="kind reading">Трактовки</span>.</p></header><div class="card"><ul class="ctx-list" id="ch-ctx"></ul></div></div>
       <div class="block" id="ch-q-block"><header><h3>Цитаты главы</h3></header><div class="quotes" id="ch-quotes"></div></div>
       <div class="block" id="ch-m-block"><header><h3>Смыслы в этой главе</h3></header><div class="mean" id="ch-mean"></div></div>
+      <div class="block" id="ch-w-block"><header><h3>Мир вокруг главы</h3></header><div class="wlist" id="ch-world"></div><a class="more-link" href="#world">Вся эпоха →</a></div>
       <div class="ch-nav"><button type="button" id="ch-prev">← Предыдущая</button><button type="button" id="ch-next">Следующая →</button></div>
     </div>
   </section>
@@ -172,6 +174,16 @@
         <header><h3>Журнал чтения</h3></header>
         <div class="scroll"><table class="plain"><thead><tr><th>Дата</th><th>Где</th><th>Что добавлено</th></tr></thead><tbody id="logrows"></tbody></table></div>
       </div>
+    </div>
+  </section>
+  <!-- МИР -->
+  <section class="view" id="v-world" data-view="world" hidden>
+    <div class="wrap">
+      <div class="block">
+        <header><h2>Мир романа</h2><p class="lead">Эпоха, место и автор. Только реальная история; сюжет книги здесь не продолжается дальше прочитанного.</p></header>
+        <div class="chips" id="w-chips" role="toolbar" aria-label="Разделы мира"></div>
+      </div>
+      <div id="w-sections" style="display:flex;flex-direction:column;gap:28px"></div>
     </div>
   </section>
 </main>

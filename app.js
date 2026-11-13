@@ -120,8 +120,26 @@
     li.appendChild(w); li.appendChild(el('div','dot')); li.appendChild(wt); tl.appendChild(li); });
   var lr=document.getElementById('logrows'); D.log.slice().reverse().forEach(function(r){ var tr=el('tr'); [r.date,r.where,r.what].forEach(function(v){ tr.appendChild(el('td',null,v)); }); lr.appendChild(tr); });
 
+  // WORLD view
+  function worldCard(x){
+    var c=el('article','card wcard'); var top=el('div','wtop'); top.appendChild(el('span','when',x.when));
+    if(x.ch&&x.ch!=='—'){ nums(x.ch).forEach(function(n){ if(n>CUR) return; var b=el('a','chl','гл. '+n); b.href='#ch-'+n; top.appendChild(b); }); }
+    c.appendChild(top); c.appendChild(el('h3',null,x.title)); c.appendChild(el('p',null,x.text));
+    if(x.novel){ var p=el('p','novel'); p.appendChild(el('b',null,'В романе. ')); p.appendChild(document.createTextNode(x.novel)); c.appendChild(p); }
+    return c;
+  }
+  var W=D.world||[], wsec=document.getElementById('w-sections'), wch=document.getElementById('w-chips');
+  W.forEach(function(s){
+    var b=el('button','chip',s.title); b.type='button'; b.appendChild(el('span','n',String(s.items.length)));
+    b.addEventListener('click',function(){ var t=document.getElementById('w-'+s.id); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); wch.appendChild(b);
+    var blk=el('div','block'); blk.id='w-'+s.id; var hd=el('header'); hd.appendChild(el('h3',null,s.title)); if(s.lead) hd.appendChild(el('p','lead',s.lead)); blk.appendChild(hd);
+    var l=el('div','wlist'); s.items.forEach(function(x){ l.appendChild(worldCard(x)); }); blk.appendChild(l); wsec.appendChild(blk);
+  });
+  function worldFor(n){ var out=[]; W.forEach(function(s){ s.items.forEach(function(x){ if(x.ch&&nums(x.ch).indexOf(n)>-1) out.push(x); }); }); return out; }
+  var _rc=renderChapter; renderChapter=function(n){ _rc(n); var ws=worldFor(n), wl=document.getElementById('ch-world'); wl.textContent=''; document.getElementById('ch-w-block').hidden=!ws.length; ws.forEach(function(x){ wl.appendChild(worldCard(x)); }); };
+
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
-  var tabs=['chapter','quotes','meanings','people','story'];
+  var tabs=['chapter','quotes','meanings','people','story','world'];
   function show(tab,n){
     tabs.forEach(function(t){ document.getElementById('v-'+t).hidden=(t!==tab); });
     Array.prototype.forEach.call(document.querySelectorAll('nav.tabbar a'),function(a){ if(a.dataset.tab===tab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });

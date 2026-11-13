@@ -45,7 +45,7 @@ header.top .wrap{display:flex;flex-direction:column;gap:10px}
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 /* tabbar */
 nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--rule);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.tabbar .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabbar .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 nav.tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:var(--tabbar-h);text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:500}
 nav.tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 nav.tabbar a[aria-current="page"]{color:var(--ink)}
@@ -187,3 +187,16 @@ table.plain td.m{font:400 .72rem var(--f-mono);color:var(--muted);white-space:no
 @media (max-width:480px){.tl li{grid-template-columns:70px 20px 1fr}}
 .empty{color:var(--muted);font-size:.92rem}
 @media (prefers-reduced-motion:no-preference){.view{animation:fade .18s ease-out}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+
+/* world */
+.wlist{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:820px){.wlist{grid-template-columns:1fr 1fr}}
+.wcard h3{margin:0}
+.wcard p{margin:0;font-size:.95rem}
+.wtop{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.wcard .when{font:500 .72rem var(--f-mono);letter-spacing:.03em;color:var(--muted);margin-right:auto}
+.chl{font:500 .7rem var(--f-mono);color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:2px 8px}
+.wcard .novel{border-left:2px solid var(--muted);padding-left:10px;color:var(--ink);font-size:.92rem}
+.more-link{font-size:.9rem;color:var(--muted);align-self:flex-start}
+#w-sections .block{scroll-margin-top:16px}
+@media (min-width:820px){#w-sections .block{scroll-margin-top:64px}}
