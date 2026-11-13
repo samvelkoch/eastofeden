@@ -132,12 +132,26 @@
   // картинки: Wikimedia Commons, Special:FilePath отдаёт превью нужной ширины
   var COM='https://commons.wikimedia.org/wiki/';
   function figure(im){
-    var f=el('figure','wimg'), a=el('a'); a.href=COM+'File:'+encodeURIComponent(im.file.replace(/ /g,'_')); a.target='_blank'; a.rel='noopener';
+    var f=el('figure','wimg'), a=el('a'), page=COM+'File:'+encodeURIComponent(im.file.replace(/ /g,'_'));
+    a.href=im.full||im.src||page; a.addEventListener('click',function(e){ e.preventDefault(); openLb(im,page); });
     var img=el('img'); img.loading='lazy'; img.decoding='async'; img.alt=im.cap||''; img.src=im.src||(COM+'Special:FilePath/'+encodeURIComponent(im.file)+'?width=640');
     img.addEventListener('error',function(){ f.remove(); }); a.appendChild(img); f.appendChild(a);
-    var fc=el('figcaption'); if(im.cap) fc.appendChild(el('span',null,im.cap)); var cr=el('a','credit',im.credit||'Wikimedia Commons'); cr.href=a.href; cr.target='_blank'; cr.rel='noopener'; fc.appendChild(cr); f.appendChild(fc);
+    var fc=el('figcaption'); if(im.cap) fc.appendChild(el('span',null,im.cap)); var cr=el('a','credit',im.credit||'Wikimedia Commons'); cr.href=page; cr.target='_blank'; cr.rel='noopener'; fc.appendChild(cr); f.appendChild(fc);
     return f;
   }
+  // просмотр картинки поверх страницы
+  var lb=null;
+  function openLb(im,page){
+    if(!lb){ lb=el('div','lb'); lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true');
+      lb.innerHTML='<button class="lb-x" type="button" aria-label="Закрыть">✕</button><img alt=""><div class="lb-cap"><span></span><a target="_blank" rel="noopener"></a></div>';
+      lb.addEventListener('click',function(e){ if(e.target.closest('a')) return; closeLb(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) closeLb(); });
+      document.body.appendChild(lb); }
+    var img=lb.querySelector('img'); img.src=im.full||im.src; img.alt=im.cap||'';
+    lb.querySelector('.lb-cap span').textContent=im.cap||''; var cr=lb.querySelector('.lb-cap a'); cr.textContent=im.credit||'Wikimedia Commons'; cr.href=page;
+    lb.hidden=false; document.documentElement.style.overflow='hidden';
+  }
+  function closeLb(){ lb.hidden=true; lb.querySelector('img').removeAttribute('src'); document.documentElement.style.overflow=''; }
   // карты: SVG из img/, вставляем инлайн, чтобы работали цвета темы
   var svgCache={};
   function loadSvg(url,box){

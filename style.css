@@ -262,3 +262,9 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 #map-usa .map-small{font-size:18px}
 #map-usa .map-svg text{stroke-width:4px}
 .wimg img{object-position:50% 30%}
+.wimg>a{cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:50;background:#0b0b0b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));cursor:zoom-out}
+.lb img{max-width:100%;max-height:calc(100dvh - 140px);object-fit:contain;border-radius:6px}
+.lb-cap{max-width:68ch;color:#e8e8e8;font-size:.9rem;line-height:1.5;display:flex;flex-direction:column;gap:4px;text-align:center}
+.lb-cap a{color:#a8a8a8;font:400 .74rem/1.4 var(--f-mono);text-decoration:none;border-bottom:1px dotted #555;align-self:center}
+.lb-x{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:1.2rem;cursor:pointer}
