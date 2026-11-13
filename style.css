@@ -218,13 +218,13 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 @media (max-width:560px){header.top{padding-block:14px 6px}.where-pill{width:100%;font-size:.88rem}.top-row .eyebrow{max-width:60%}}
 
 /* Картинки в «Мире»: ч/б, лёгкие, подпись + источник */
-.wimg{margin:-4px 0 4px;display:flex;flex-direction:column;gap:8px}
-.wimg>a{display:block;border-radius:10px;overflow:hidden;background:var(--lupine-soft);aspect-ratio:4/3}
-.wimg img{display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .2s}
+.wimg{margin:-4px 0 4px;display:flex;flex-direction:column;gap:8px;flex:none;min-width:0}
+.wimg>a{display:block;position:relative;height:0;padding-top:75%;border-radius:10px;overflow:hidden;background:var(--lupine-soft);flex:none}
+.wimg img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .2s}
 .wimg figcaption{font-size:.86rem;line-height:1.5;color:var(--muted);display:flex;flex-direction:column;gap:2px}
 .wimg .credit{font:400 .74rem/1.4 var(--f-mono);color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--rule);align-self:flex-start}
 :root[data-theme="dark"] .wimg img{filter:grayscale(1) brightness(.88)}
-:root[data-theme="sepia"] .wimg img{filter:grayscale(1) sepia(.35) contrast(1.02)}
+:root[data-theme="sepia"] .wimg img{filter:grayscale(1) sepia(.22) contrast(1.02)}
 :root[data-theme="night"] .wimg img{filter:grayscale(1) sepia(.4) brightness(.82)}
 @media (prefers-color-scheme:dark){:root:not([data-theme]) .wimg img{filter:grayscale(1) brightness(.88)}}
 
@@ -273,8 +273,8 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 
 /* Читательские темы: сепия, серая «бумага», ночная сепия */
 :root[data-theme="sepia"]{
-  --bg:#f3ead6; --surface:#faf4e6; --ink:#3a2e21; --muted:#6c5b46; --rule:#e0d3b6;
-  --lupine:#3a2e21; --lupine-soft:#ebdfc3; --poppy:#8a7556; --poppy-soft:#efe5cf; --valley:#cbb894}
+  --bg:#efe7dd; --surface:#f8f3ec; --ink:#3a2f28; --muted:#6e6055; --rule:#dccfc1;
+  --lupine:#3a2f28; --lupine-soft:#e6dbce; --poppy:#8a786a; --poppy-soft:#ebe2d7; --valley:#c5b4a3}
 :root[data-theme="gray"]{
   --bg:#e2e2df; --surface:#ececea; --ink:#2a2a2a; --muted:#5c5c5a; --rule:#cdcdca;
   --lupine:#2a2a2a; --lupine-soft:#d7d7d4; --poppy:#787876; --poppy-soft:#dadad7; --valley:#b3b3b0}
