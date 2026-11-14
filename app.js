@@ -178,22 +178,42 @@
   }
   var W=D.world||[], wsec=document.getElementById('w-sections'), wch=document.getElementById('w-chips');
   var MAPS=D.maps||[];
-  if(MAPS.length){ var mb=el('button','chip','Карты'); mb.type='button'; mb.appendChild(el('span','n',String(MAPS.length)));
-    mb.addEventListener('click',function(){ var t=document.getElementById('map-'+MAPS[0].id); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); wch.appendChild(mb);
-    MAPS.forEach(function(M){ wsec.appendChild(mapBlock(M)); }); }
+  // «Мир»: один раздел на экране (вкладки-чипы), карточки свёрнуты в строку
+  function worldRow(x){
+    var d=el('details','card wrow'); var s=el('summary');
+    if(x.img&&x.img.src){ var th=el('img','wthumb'); th.loading='lazy'; th.decoding='async'; th.alt=''; th.src=x.img.src; th.addEventListener('error',function(){ th.remove(); }); s.appendChild(th); }
+    var h=el('div','wrow-h'); var top=el('div','wtop'); top.appendChild(el('span','when',x.when));
+    if(x.ch&&x.ch!=='—'){ nums(x.ch).forEach(function(n){ if(n>CUR) return; top.appendChild(el('span','chl','гл. '+n)); }); }
+    h.appendChild(top); h.appendChild(el('h3',null,x.title)); s.appendChild(h); s.appendChild(el('span','wchev','+')); d.appendChild(s);
+    var body=el('div','wrow-b'); d.appendChild(body); var filled=false;
+    d.addEventListener('toggle',function(){ if(!d.open||filled) return; filled=true; var c=worldCard(x); while(c.firstChild){ var n=c.firstChild; c.removeChild(n); if(n.classList&&(n.classList.contains('wtop')||n.tagName==='H3')) continue; body.appendChild(n); } });
+    return d;
+  }
+  var panels={}, wbtn={}, wcur=null;
+  function addTab(id,title,count,build){
+    var b=el('button','chip',title); b.type='button'; b.setAttribute('aria-pressed','false'); if(count!=null) b.appendChild(el('span','n',String(count)));
+    b.addEventListener('click',function(){ wshow(id,true); }); wch.appendChild(b); wbtn[id]=b;
+    var p=el('div','wpanel'); p.hidden=true; p.dataset.build='1'; panels[id]={el:p,build:build}; wsec.appendChild(p);
+  }
+  function wshow(id,save){ if(!panels[id]) id=Object.keys(panels)[0]; wcur=id;
+    Object.keys(panels).forEach(function(k){ var P=panels[k]; var on=k===id; P.el.hidden=!on; wbtn[k].setAttribute('aria-pressed',on?'true':'false');
+      if(on&&P.el.dataset.build){ delete P.el.dataset.build; P.build(P.el); } });
+    if(save){ try{ localStorage.setItem('eoe-wsec',id); }catch(e){} var t=wbtn[id]; if(t&&t.scrollIntoView) t.scrollIntoView({block:'nearest',inline:'center'}); }
+  }
   W.forEach(function(s){
-    var b=el('button','chip',s.title); b.type='button'; b.appendChild(el('span','n',String(s.items.length)));
-    b.addEventListener('click',function(){ var t=document.getElementById('w-'+s.id); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); }); wch.appendChild(b);
-    var blk=el('div','block'); blk.id='w-'+s.id; var hd=el('header'); hd.appendChild(el('h3',null,s.title)); if(s.lead) hd.appendChild(el('p','lead',s.lead)); blk.appendChild(hd);
-    var l=el('div','wlist'); s.items.forEach(function(x){ l.appendChild(worldCard(x)); }); blk.appendChild(l); wsec.appendChild(blk);
+    addTab(s.id,s.title,s.items.length,function(p){ var blk=el('div','block'); blk.id='w-'+s.id; if(s.lead){ var hd=el('header'); hd.appendChild(el('p','lead',s.lead)); blk.appendChild(hd); }
+      var l=el('div','wrows'); s.items.slice().sort(function(a,b){ return (nums(b.ch||'0')[0]||0)-(nums(a.ch||'0')[0]||0); }).forEach(function(x){ l.appendChild(worldRow(x)); }); blk.appendChild(l); p.appendChild(blk); });
   });
+  if(MAPS.length) addTab('maps','Карты',MAPS.length,function(p){ MAPS.forEach(function(M){ p.appendChild(mapBlock(M)); }); });
+  var wsaved=null; try{ wsaved=localStorage.getItem('eoe-wsec'); }catch(e){}
+  wshow(wsaved||(W[0]&&W[0].id));
   function worldFor(n){ var out=[]; W.forEach(function(s){ s.items.forEach(function(x){ if(x.ch&&nums(x.ch).indexOf(n)>-1) out.push(x); }); }); return out; }
   var _rc=renderChapter; renderChapter=function(n){ _rc(n); var ws=worldFor(n), wl=document.getElementById('ch-world'); wl.textContent=''; document.getElementById('ch-w-block').hidden=!ws.length; ws.forEach(function(x){ wl.appendChild(worldCard(x)); });
     var mp=document.getElementById('ch-maps'); mp.textContent=''; var any=false;
     MAPS.forEach(function(M){ var ps=M.points.filter(function(p){ return nums(p.ch).indexOf(n)>-1; }); if(!ps.length) return; any=true;
       var a=el('a','map-hint'); a.href='#world'; a.dataset.map=M.id; a.appendChild(el('span','eyebrow',M.title)); a.appendChild(el('span',null,ps.map(function(p){ return p.name; }).join(' · ')+' →')); mp.appendChild(a); });
     if(any) document.getElementById('ch-w-block').hidden=false; };
-  document.getElementById('ch-maps').addEventListener('click',function(e){ var a=e.target.closest('a.map-hint'); if(!a) return; e.preventDefault(); var id=a.dataset.map; go('world');
+  document.getElementById('ch-maps').addEventListener('click',function(e){ var a=e.target.closest('a.map-hint'); if(!a) return; e.preventDefault(); var id=a.dataset.map; go('world'); wshow('maps',true);
     setTimeout(function(){ var t=document.getElementById('map-'+id); if(t) t.scrollIntoView({block:'start'}); },150); });
 
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
