@@ -2785,7 +2785,9 @@
      "img": {
       "file": "The only one barred out cph.3b48680.jpg",
       "cap": "«Единственный, кого не пустили», карикатура 1882 года",
-      "credit": "Frank Leslie's Illustrated Newspaper, 1882 / Library of Congress"
+      "credit": "Frank Leslie's Illustrated Newspaper, 1882 / Library of Congress",
+      "full": "img/w/full/1036adaeaf3a.jpg",
+      "src": "img/w/1036adaeaf3a.jpg"
      }
     },
     {
@@ -2798,7 +2800,9 @@
      "img": {
       "file": "Union Refrigerator Line refrigerator car 1895.jpg",
       "cap": "Вагон-рефрижератор, 1895",
-      "credit": "Public domain"
+      "credit": "Public domain",
+      "full": "img/w/full/cdd02070c29d.jpg",
+      "src": "img/w/cdd02070c29d.jpg"
      }
     }
    ]
@@ -3006,7 +3010,9 @@
      "img": {
       "file": "Shelterbelts- Windbreaks - California - DPLA - 1d9d3645cab55c9d3eebe5934cb8ecf2.jpg",
       "cap": "Ветрозащитная полоса, Калифорния",
-      "credit": "DPLA / Public domain"
+      "credit": "DPLA / Public domain",
+      "full": "img/w/full/4871301a95f0.jpg",
+      "src": "img/w/4871301a95f0.jpg"
      }
     },
     {
@@ -3258,7 +3264,9 @@
      "img": {
       "file": "The vegetable peddler, Chinatown, San Francisco LOC agc.7a09129.jpg",
       "cap": "Торговец овощами, Чайна-таун Сан-Франциско, 1896–1906",
-      "credit": "Arnold Genthe / Library of Congress"
+      "credit": "Arnold Genthe / Library of Congress",
+      "full": "img/w/full/c62ffcaf755c.jpg",
+      "src": "img/w/c62ffcaf755c.jpg"
      }
     },
     {
@@ -3279,7 +3287,9 @@
      "img": {
       "file": "18th century dowser.jpg",
       "cap": "Лозоходец, гравюра XVIII века",
-      "credit": "Public domain"
+      "credit": "Public domain",
+      "full": "img/w/full/ef8b7ca85037.jpg",
+      "src": "img/w/ef8b7ca85037.jpg"
      }
     }
    ]
@@ -3419,7 +3429,9 @@
      "img": {
       "file": "Othello and Desdemona by Alexandre-Marie Colin.jpg",
       "cap": "Отелло и Дездемона, А.-М. Колен, 1829",
-      "credit": "Public domain"
+      "credit": "Public domain",
+      "full": "img/w/full/f5bd768c20f2.jpg",
+      "src": "img/w/f5bd768c20f2.jpg"
      }
     }
    ]
