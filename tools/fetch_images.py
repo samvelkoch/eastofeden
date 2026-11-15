@@ -15,6 +15,18 @@ def fetch(name: str, width: int = 960) -> bytes:
     with urllib.request.urlopen(req, timeout=60) as r:
         return r.read()
 
+def license_of(name: str) -> str:
+    q = urllib.parse.urlencode({'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'extmetadata',
+                                'iiextmetadatafilter': 'LicenseShortName', 'titles': 'File:' + name})
+    req = urllib.request.Request('https://commons.wikimedia.org/w/api.php?' + q, headers={'User-Agent': UA})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        pages = json.load(r)['query']['pages']
+    for pg in pages.values():
+        return pg.get('imageinfo', [{}])[0].get('extmetadata', {}).get('LicenseShortName', {}).get('value', '?')
+    return '?'
+
+FREE = ('public domain', 'pd', 'cc0', 'no restrictions', 'no known copyright')
+
 def main() -> int:
     d = json.loads(DATA.read_text(encoding='utf-8'))
     OUT.mkdir(parents=True, exist_ok=True)
@@ -39,6 +51,13 @@ def main() -> int:
                     time.sleep(1)
                 except Exception as e:  # noqa: BLE001 — логируем и идём дальше
                     failed.append(im['file']); print('FAIL', im['file'], repr(e)); continue
+            if not im.get('license'):
+                try:
+                    im['license'] = license_of(im['file']); changed = True
+                except Exception as e:  # noqa: BLE001
+                    print('LIC? ', im['file'], repr(e))
+            if im.get('license') and not any(k in im['license'].lower() for k in FREE):
+                print('NONFREE', im['file'], im['license'])
             if im.get('full') != 'img/w/full/' + slug:
                 im['full'] = 'img/w/full/' + slug; changed = True
             src = 'img/w/' + slug
