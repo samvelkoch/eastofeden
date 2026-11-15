@@ -3951,7 +3951,10 @@
      "img": {
       "file": "PSM V06 D297 Grizzly bear.jpg",
       "cap": "Гризли, гравюра из Popular Science Monthly, 1875",
-      "credit": "Public domain"
+      "credit": "Public domain",
+      "license": "Public domain",
+      "full": "img/w/full/a0ccd04a885a.jpg",
+      "src": "img/w/a0ccd04a885a.jpg"
      }
     },
     {
@@ -4299,7 +4302,10 @@
      "img": {
       "file": "Close-up of a blue eye in a Nigerian Dwarf goat.jpg",
       "cap": "Глаз козы",
-      "credit": "Wikimedia Commons"
+      "credit": "Wikimedia Commons",
+      "license": "CC BY-SA 3.0",
+      "full": "img/w/full/9f0ff578b2c1.jpg",
+      "src": "img/w/9f0ff578b2c1.jpg"
      }
     },
     {
