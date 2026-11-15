@@ -4302,7 +4302,10 @@
      "img": {
       "file": "Female goat - Public Domain.jpg",
       "cap": "Коза: горизонтальный зрачок",
-      "credit": "Public domain"
+      "credit": "Public domain",
+      "license": "CC0",
+      "full": "img/w/full/c6a6dfd86771.jpg",
+      "src": "img/w/c6a6dfd86771.jpg"
      }
     },
     {
