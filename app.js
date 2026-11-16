@@ -233,6 +233,25 @@
     if(byCh.length){ jl.appendChild(el('p','jgroup','По главам')); byCh.slice().sort(function(a,b){ return (nums(a.ch)[0]-nums(b.ch)[0])||(a.n-b.n); }).forEach(function(e){ jl.appendChild(jCard(e,true)); }); }
   })();
   var _rc2=renderChapter; renderChapter=function(n){ _rc2(n); var js=JN.filter(function(e){ return e.ch&&nums(e.ch).indexOf(n)>-1; }), l=document.getElementById('ch-journal'); if(!l) return; l.textContent=''; document.getElementById('ch-j-block').hidden=!js.length; js.forEach(function(e){ l.appendChild(jCard(e,false)); }); };
+
+  // «Как писалась глава»: связные рассказы по письмам
+  var JS=(D.journal&&D.journal.stories||[]).filter(function(s){ return !s.ch||nums(s.ch).every(function(n){ return n<=CUR; }); });
+  function jStory(s,open,withCh){
+    var d=el('details','card jstory'); if(open) d.open=true; var sm=el('summary'), h=el('div','jtop');
+    h.appendChild(el('span','jdate',s.when+' 1951'));
+    if(withCh&&s.ch) nums(s.ch).forEach(function(n){ h.appendChild(el('span','chl','гл. '+n)); });
+    sm.appendChild(h); sm.appendChild(el('h3',null,s.t)); sm.appendChild(el('span','wchev','+')); d.appendChild(sm);
+    var b=el('div','jbody'); s.p.forEach(function(t){ b.appendChild(el('p',null,t)); }); d.appendChild(b); return d;
+  }
+  (function(){ var jl=document.getElementById('j-list'); if(!jl||!JS.length) return; var box=el('div','jstories');
+    box.appendChild(el('p','jgroup','Как писалась книга: рассказ по письмам'));
+    JS.forEach(function(s){ box.appendChild(jStory(s,false,true)); });
+    box.appendChild(el('p','jgroup','Цитаты из писем'));
+    jl.insertBefore(box,jl.firstChild); })();
+  var _rc3=renderChapter; renderChapter=function(n){ _rc3(n); var l=document.getElementById('ch-journal'); if(!l) return;
+    var ss=JS.filter(function(s){ return s.ch&&nums(s.ch).indexOf(n)>-1; });
+    ss.slice().reverse().forEach(function(s){ l.insertBefore(jStory(s,false,false),l.firstChild); });
+    if(ss.length) document.getElementById('ch-j-block').hidden=false; };
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
   var tabs=['chapter','quotes','meanings','people','story','world','journal'];
   function show(tab,n){

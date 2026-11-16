@@ -321,3 +321,11 @@ table.plain td.m{font:400 .8rem var(--f-mono);color:var(--muted);white-space:now
 .jcard .jr{font-size:.92rem;color:var(--muted)}
 .jgroup{margin:22px 0 8px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 @media (max-width:420px){ nav.tabbar a{font-size:.7rem} }
+.jstory summary{list-style:none;cursor:pointer;position:relative;padding-right:28px}
+.jstory summary::-webkit-details-marker{display:none}
+.jstory summary h3{margin:2px 0 0}
+.jstory .wchev{position:absolute;right:0;top:2px;font-size:1.3rem;color:var(--muted)}
+.jstory[open] .wchev{transform:rotate(45deg)}
+.jstory .jbody{margin-top:12px}
+.jstory .jbody p{margin:0 0 12px}
+.jstories{display:grid;gap:12px}
