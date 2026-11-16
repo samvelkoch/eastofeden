@@ -40,7 +40,8 @@
   // CHAPTER view
   var chState=CUR;
   var TOTAL=55, cpGrid=document.getElementById('cp-grid'), cpOpen=document.getElementById('cp-open');
-  for(var k=1;k<=TOTAL;k++){ (function(k){ var rd=k<=MAXCH; var b=el('button','cp-cell'+(k===CUR?' now':''),String(k)); b.type='button'; b.id='cp-'+k;
+  var PARTS=D.parts||[]; function partOf(n){ for(var i=0;i<PARTS.length;i++){ if(n>=PARTS[i].a&&n<=PARTS[i].b) return PARTS[i]; } return null; }
+  for(var k=1;k<=TOTAL;k++){ (function(k){ PARTS.forEach(function(P){ if(P.a===k){ var h=el('div','cp-part'); h.appendChild(el('b',null,P.name)); h.appendChild(el('span',null,'гл. '+P.a+'–'+P.b)); cpGrid.appendChild(h); } }); var rd=k<=MAXCH; var b=el('button','cp-cell'+(k===CUR?' now':''),String(k)); b.type='button'; b.id='cp-'+k;
     if(rd){ b.title=D.chapters[k-1].title; b.addEventListener('click',function(){ setGrid(false); go('chapter',k); }); } else { b.disabled=true; b.title='Ещё не прочитано'; }
     cpGrid.appendChild(b); })(k); }
   function setGrid(v){ cpGrid.hidden=!v; cpOpen.setAttribute('aria-expanded',v?'true':'false'); }
@@ -50,10 +51,10 @@
   document.getElementById('cp-next').addEventListener('click',function(){ go('chapter',chState+1); });
   function renderChapter(n){
     chState=n; var c=D.chapters[n-1];
-    Array.prototype.forEach.call(cpGrid.children,function(b,i){ if(i+1===n) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+    Array.prototype.forEach.call(cpGrid.querySelectorAll('.cp-cell'),function(b,i){ if(i+1===n) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
     document.getElementById('cp-label').textContent='Глава '+n+' из '+TOTAL;
     document.getElementById('cp-prev').disabled=n<=1; document.getElementById('cp-next').disabled=n>=MAXCH;
-    document.getElementById('ch-eyebrow').textContent='Глава '+n+(n===CUR?' · читаю сейчас':'');
+    var P=partOf(n); document.getElementById('ch-eyebrow').textContent=(P?P.name+' · ':'')+'Глава '+n+(n===CUR?' · читаю сейчас':'');
     document.getElementById('ch-title').textContent=c.title;
     var su=document.getElementById('ch-summary'); su.textContent=''; c.summary.forEach(function(s){ su.appendChild(el('li',null,s)); });
     var bd=document.getElementById('ch-boundary'); bd.hidden=!(n===CUR); bd.textContent='Дальше этого места дневник не заглядывает: '+D.current.note+'.';
@@ -128,10 +129,10 @@
 
   // карта линий и героев по главам
   function swim(box,rows){ if(!box) return; var cols='minmax(0,1fr)'; var head=el('div','sw-row sw-head'); head.appendChild(el('span','sw-l',''));
-    var hc=el('div','sw-cells'); hc.style.setProperty('--n',CUR); for(var c=1;c<=CUR;c++){ hc.appendChild(el('span','sw-n',(c===1||c%5===0||c===CUR)?String(c):'')); } head.appendChild(hc); box.appendChild(head);
+    var hc=el('div','sw-cells'); hc.style.setProperty('--n',CUR); for(var c=1;c<=CUR;c++){ var pp=PARTS.filter(function(P){ return P.a===c; })[0]; hc.appendChild(el('span','sw-n'+(pp&&c>1?' ps':'')+(c===CUR&&c>1?' last':''),pp?['','I','II','III','IV'][pp.n]:'')); } head.appendChild(hc); box.appendChild(head);
     rows.forEach(function(r){ var row=el('div','sw-row'+(r.cls?' '+r.cls:'')); var lab=el('a','sw-l nolink',r.label); lab.href=r.href; if(r.onclick) lab.addEventListener('click',r.onclick); row.appendChild(lab);
       var cells=el('div','sw-cells'); cells.style.setProperty('--n',CUR); var on=nums(r.chs);
-      for(var c=1;c<=CUR;c++){ if(on.indexOf(c)>-1){ var x=el('a','sw-c on'); x.href='#ch-'+c; x.title='гл. '+c; x.setAttribute('aria-label',r.label+', гл. '+c); cells.appendChild(x); } else cells.appendChild(el('span','sw-c')); }
+      for(var c=1;c<=CUR;c++){ var ps=(c>1&&PARTS.some(function(P){ return P.a===c; }))?' ps':''; if(on.indexOf(c)>-1){ var x=el('a','sw-c on'+ps); x.href='#ch-'+c; x.title='гл. '+c; x.setAttribute('aria-label',r.label+', гл. '+c); cells.appendChild(x); } else cells.appendChild(el('span','sw-c'+ps)); }
       row.appendChild(cells); box.appendChild(row); }); }
   swim(document.getElementById('swim-lines'),(D.storylines||[]).map(function(L,i){ return {label:L.title,chs:L.chapters,href:'#story',onclick:function(e){ e.preventDefault(); var t=document.getElementById('line-'+i); if(t) t.scrollIntoView({block:'start',behavior:'smooth'}); }}; }));
   swim(document.getElementById('swim-people'),(D.profiles||[]).filter(function(p){ return !p.nolink||p.id==='narrator'; }).map(function(p){ return {label:p.name,chs:p.chs,href:'#p-'+p.id}; }));

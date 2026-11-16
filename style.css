@@ -402,3 +402,11 @@ a.sw-l:hover{text-decoration:underline}
 a.sw-c.on:hover{opacity:.6}
 .sw-n{font:400 .64rem var(--f-mono);color:var(--muted);text-align:center;overflow:visible;white-space:nowrap}
 @media (min-width:700px){.sw-row{flex-direction:row;align-items:center;gap:12px}.sw-l{flex:0 0 210px}.sw-head .sw-l{display:block}.sw-cells{flex:1}}
+/* части романа */
+.cp-part{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 2px 2px;border-bottom:1px solid var(--rule);font-size:.9rem}
+.cp-part:not(:first-child){margin-top:8px}
+.cp-part span{font:400 .76rem var(--f-mono);color:var(--muted)}
+.sw-c.ps,.sw-n.ps{margin-left:5px;position:relative}
+.sw-c.ps::before{content:"";position:absolute;left:-4px;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.sw-n{text-align:left}
+.sw-n.last{direction:rtl}
