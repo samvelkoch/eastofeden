@@ -423,6 +423,6 @@
   window.addEventListener('hashchange',function(){ var r=parse(); show(r[0],r[1]); window.scrollTo(0,0); });
   var r0=parse(); show(r0[0],r0[1]);
 }
-  fetch('data.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+  fetch('data.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
     .then(function(D){ var R=0; try{ R=+localStorage.getItem('eoe-read')||0; }catch(e){} start(window.__eoeGate(D,R)); }).catch(function(e){ var m=document.createElement('p'); m.className='wrap empty'; m.textContent='Не удалось загрузить данные дневника ('+e.message+'). Обнови страницу.'; document.querySelector('main').prepend(m); });
 })();
