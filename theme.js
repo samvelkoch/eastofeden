@@ -1,3 +1,4 @@
+try{ if(/[?&]reset/.test(location.search)) localStorage.removeItem("eoe-read"); }catch(e){}
 (function(){
   var KEY='eoe-theme-mode';
   var T={
