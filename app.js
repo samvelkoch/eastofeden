@@ -216,8 +216,25 @@
   document.getElementById('ch-maps').addEventListener('click',function(e){ var a=e.target.closest('a.map-hint'); if(!a) return; e.preventDefault(); var id=a.dataset.map; go('world'); wshow('maps',true);
     setTimeout(function(){ var t=document.getElementById('map-'+id); if(t) t.scrollIntoView({block:'start'}); },150); });
 
+
+  // ДНЕВНИК РОМАНА (Journal of a Novel): только записи о прочитанных главах
+  var JN=(D.journal&&D.journal.entries||[]).filter(function(e){ return !e.ch||nums(e.ch).every(function(n){ return n<=CUR; }); });
+  function jCard(e,withCh){
+    var c=el('article','card jcard'), top=el('div','jtop'); top.appendChild(el('span','jdate',e.d+' 1951'));
+    if(withCh&&e.ch) nums(e.ch).forEach(function(n){ var b=el('a','chl','гл. '+n); b.href='#ch-'+n; top.appendChild(b); });
+    c.appendChild(top); c.appendChild(el('h3',null,e.t)); c.appendChild(el('p',null,e.x));
+    if(e.q){ var bq=el('blockquote'); bq.appendChild(el('p',null,'«'+e.q+'»')); c.appendChild(bq); }
+    if(e.r){ var p=el('p','jr'); p.appendChild(el('span','kind reading','Трактовка')); p.appendChild(document.createTextNode(' '+e.r)); c.appendChild(p); }
+    return c;
+  }
+  (function(){ var jl=document.getElementById('j-list'); if(!jl) return; document.getElementById('j-lead').textContent=(D.journal&&D.journal.lead)||'';
+    var pre=JN.filter(function(e){ return !e.ch; }), byCh=JN.filter(function(e){ return e.ch; });
+    if(pre.length){ jl.appendChild(el('p','jgroup','О книге в целом')); pre.forEach(function(e){ jl.appendChild(jCard(e,false)); }); }
+    if(byCh.length){ jl.appendChild(el('p','jgroup','По главам')); byCh.slice().sort(function(a,b){ return (nums(a.ch)[0]-nums(b.ch)[0])||(a.n-b.n); }).forEach(function(e){ jl.appendChild(jCard(e,true)); }); }
+  })();
+  var _rc2=renderChapter; renderChapter=function(n){ _rc2(n); var js=JN.filter(function(e){ return e.ch&&nums(e.ch).indexOf(n)>-1; }), l=document.getElementById('ch-journal'); if(!l) return; l.textContent=''; document.getElementById('ch-j-block').hidden=!js.length; js.forEach(function(e){ l.appendChild(jCard(e,false)); }); };
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
-  var tabs=['chapter','quotes','meanings','people','story','world'];
+  var tabs=['chapter','quotes','meanings','people','story','world','journal'];
   function show(tab,n){
     tabs.forEach(function(t){ document.getElementById('v-'+t).hidden=(t!==tab); });
     Array.prototype.forEach.call(document.querySelectorAll('nav.tabbar a'),function(a){ if(a.dataset.tab===tab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
