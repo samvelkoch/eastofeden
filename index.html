@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 <header class="top">
@@ -20,8 +20,8 @@
       <h1>К востоку <em>от Эдема</em></h1>
       <button class="where-pill" id="where-pill" type="button"></button>
     </div>
-    <div class="progress"><div class="bar"><i id="bar"></i></div><span id="pct"></span></div>
-    <div class="readpos"><label for="read-sel">Мой прогресс: прочитано до</label><select id="read-sel"></select><p class="hint" id="read-note"></p></div>
+    <div class="progress"><div class="bar"><i id="bar"></i></div><button type="button" class="pct-btn" id="pct-btn" aria-expanded="false" aria-controls="readpos"><span id="pct"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="readpos" id="readpos" hidden><label for="read-sel">Я прочитал(а) до главы</label><select id="read-sel"></select><p class="hint" id="read-note"></p></div></div>
   </div>
 </header>
 
@@ -225,7 +225,7 @@
   </section>
 </main>
 
-<script src="theme.js?v=15"></script>
-<script src="app.js?v=15" defer></script>
+<script src="theme.js?v=16"></script>
+<script src="app.js?v=16" defer></script>
 </body>
 </html>

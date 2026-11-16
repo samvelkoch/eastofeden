@@ -36,11 +36,14 @@
   // header
   document.getElementById('bar').style.width=D.current.pct+'%';
   document.getElementById('pct').textContent='≈'+Math.round(D.current.pct)+'% · гл. '+CUR+' из 55';
+  (function(){ var b=document.getElementById('pct-btn'), p=document.getElementById('readpos'); function set(v){ p.hidden=!v; b.setAttribute('aria-expanded',v?'true':'false'); }
+    b.addEventListener('click',function(e){ e.stopPropagation(); set(p.hidden); }); p.addEventListener('click',function(e){ e.stopPropagation(); });
+    document.addEventListener('click',function(){ set(false); }); document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); }); })();
   var pill=document.getElementById('where-pill'); pill.textContent=D.__gated?'Читаю: гл. '+CUR:'Читаю: гл. '+CUR+' · '+D.current.note;
   (function(){ var sel=document.getElementById('read-sel'); if(!sel) return; var OWN=D.__owner;
     for(var i=1;i<=OWN;i++){ var o=document.createElement('option'); o.value=String(i); o.textContent=(i===OWN?'гл. '+i+' (как у автора)':'гл. '+i); sel.appendChild(o); }
     sel.value=String(CUR); sel.addEventListener('change',function(){ try{ if(+sel.value>=OWN) localStorage.removeItem('eoe-read'); else localStorage.setItem('eoe-read',sel.value); }catch(e){} location.reload(); });
-    var nt=document.getElementById('read-note'); if(nt) nt.textContent=D.__gated?'Скрыто всё, что связано с главами после '+CUR+'. Пересказы героев и линий, вопросы клуба и спор критиков недоступны до конца книги.':'Читаете сами? Выберите, до какой главы дошли: всё дальше скроется.';
+    var nt=document.getElementById('read-note'); if(nt) nt.textContent=D.__gated?'Скрыто всё после главы '+CUR+'. Пересказы героев и линий, вопросы и спор критиков откроются в конце.':'Читаете сами? Выберите главу, и дальнейшее скроется.';
     if(D.__gated){ var fb=document.getElementById('fam-block'); if(fb) fb.hidden=true; }
   })();
   pill.addEventListener('click',function(){ go('chapter',CUR); });

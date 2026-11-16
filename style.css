@@ -464,3 +464,10 @@ a.dl-it:hover .dl-t{text-decoration:underline}
 .idea-legend{align-items:center;flex-wrap:wrap;gap:8px 14px}
 .idea-legend .chip{min-height:32px;padding:4px 12px;font-size:.84rem}
 .in-t{font-size:12px}
+.progress{position:relative}
+.pct-btn{display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:.88rem;color:var(--muted);background:none;border:0;padding:6px 0 6px 8px;cursor:pointer;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pct-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .15s}
+.pct-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.readpos{position:absolute;right:0;top:100%;z-index:30;width:min(320px,100%);flex-direction:column;align-items:stretch;gap:10px;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.12);color:var(--ink)}
+.readpos:not([hidden]){display:flex}
+.readpos label{font-weight:500}
