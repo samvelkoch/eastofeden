@@ -410,3 +410,8 @@ a.sw-c.on:hover{opacity:.6}
 .sw-c.ps::before{content:"";position:absolute;left:-4px;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
 .sw-n{text-align:left}
 .sw-n.last{direction:rtl}
+
+/* reader progress */
+.readpos{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:.92rem;color:var(--muted)}
+.readpos select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:10px;min-height:40px;padding:6px 10px}
+.readpos .hint{flex-basis:100%;margin:0}

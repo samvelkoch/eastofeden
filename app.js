@@ -1,4 +1,31 @@
 (function(){
+  // Прогресс читателя: показываем только то, что относится к главам ≤ READ. По умолчанию READ = граница автора (ничего не скрыто).
+  function nums(str){ var out=[]; String(str==null?'':str).replace(/(\d+)\s*[–-]\s*(\d+)|(\d+)/g,function(m,a,b,c){ if(a){ for(var i=+a;i<=+b;i++) out.push(i);} else out.push(+c); return m; }); return out; }
+  function within(str,R){ return nums(str).every(function(n){ return n<=R; }); }
+  function refsOK(o,R){ var s=JSON.stringify(o), re=/(?:гл\.|глав[аыуе]?)\s*(\d[\d–,\s-]*)/gi, m; while((m=re.exec(s))){ if(!within(m[1],R)) return false; } return true; }
+  function firstLE(str,R){ var n=nums(str); return n.length?Math.min.apply(null,n)<=R:true; }
+  function gate(D,R){
+    var CUR=D.current.ch; if(!(R>=1)||R>=CUR){ D.__author=true; D.__owner=CUR; return D; }
+    D.__owner=CUR; D.__gated=true;
+    D.chapters=D.chapters.slice(0,R);
+    D.current={ch:R,note:'конец главы '+R,pct:D.current.pct*R/CUR,gated:true};
+    D.quotes=D.quotes.filter(function(q){ return within(q.ch,R)&&refsOK(q,R); });
+    D.timeline=D.timeline.filter(function(e){ return within(e.src,R)&&refsOK(e,R); });
+    D.context=(D.context||[]).filter(function(x){ return within(x.ch,R)&&refsOK(x,R); });
+    D.meanings=(D.meanings||[]).filter(function(x){ return within(x.where,R)&&refsOK(x,R); });
+    D.world=(D.world||[]).map(function(s){ var c=Object.assign({},s); c.items=s.items.filter(function(x){ var has=nums(x.ch).length; return (has?within(x.ch,R):!x.novel)&&refsOK(x,R); }); return c; }).filter(function(s){ return s.items.length; });
+    D.maps=(D.maps||[]).map(function(m){ var c=Object.assign({},m); c.lead='Места из прочитанных глав.'; c.points=(m.points||[]).filter(function(p){ return within(p.ch,R)&&refsOK(p,R); }); return c; }).filter(function(m){ return m.points.length; });
+    D.cast=D.cast.map(function(g){ return {group:g.group,people:g.people.filter(function(p){ return firstLE(p[2],R); }).map(function(p){ var c=p.slice(); c[1]=''; return c; })}; }).filter(function(g){ return g.people.length; });
+    var vis={}; D.profiles=(D.profiles||[]).filter(function(p){ var ok=firstLE(p.chs,R); if(ok) vis[p.id]=1; return ok; }).map(function(p){ var c=Object.assign({},p); c.short=''; c.bio=[]; c.rel=(p.rel||[]).filter(function(r){ return vis[r.id]; }); return c; });
+    D.storylines=(D.storylines||[]).filter(function(L){ return firstLE(L.chapters,R); }).map(function(L){ return {title:L.title,chapters:'гл. '+nums(L.chapters).filter(function(n){ return n<=R; }).join(', '),beats:[],now:'Пересказ линии скрыт, чтобы не раскрыть дальнейшее.'}; });
+    if(D.journal){ var J=Object.assign({},D.journal); var fx=function(e){ var c=Object.assign({},e); if(c.r&&!refsOK(c.r,R)) delete c.r; return c; }; J.entries=(J.entries||[]).map(fx).filter(function(e){ return refsOK(e,R); }); J.stories=(J.stories||[]).map(fx).filter(function(e){ return refsOK(e,R); }); D.journal=J; }
+    D.profiles=D.profiles.map(function(p){ var c=Object.assign({},p); c.ev=(p.ev||[]).filter(function(e){ return refsOK(e,R); }); return c; });
+    D.debates=[]; D.questions=[]; D.log=[];
+    return D;
+  }
+  window.__eoeGate=gate;
+})();
+(function(){
   function start(D){
   var T=D.themes;
   function el(tag,cls,txt){ var n=document.createElement(tag); if(cls) n.className=cls; if(txt!=null) n.textContent=txt; return n; }
@@ -9,7 +36,13 @@
   // header
   document.getElementById('bar').style.width=D.current.pct+'%';
   document.getElementById('pct').textContent='≈'+Math.round(D.current.pct)+'% · гл. '+CUR+' из 55';
-  var pill=document.getElementById('where-pill'); pill.textContent='Читаю: гл. '+CUR+' · '+D.current.note;
+  var pill=document.getElementById('where-pill'); pill.textContent=D.__gated?'Читаю: гл. '+CUR:'Читаю: гл. '+CUR+' · '+D.current.note;
+  (function(){ var sel=document.getElementById('read-sel'); if(!sel) return; var OWN=D.__owner;
+    for(var i=1;i<=OWN;i++){ var o=document.createElement('option'); o.value=String(i); o.textContent=(i===OWN?'гл. '+i+' (как у автора)':'гл. '+i); sel.appendChild(o); }
+    sel.value=String(CUR); sel.addEventListener('change',function(){ try{ if(+sel.value>=OWN) localStorage.removeItem('eoe-read'); else localStorage.setItem('eoe-read',sel.value); }catch(e){} location.reload(); });
+    var nt=document.getElementById('read-note'); if(nt) nt.textContent=D.__gated?'Скрыто всё, что связано с главами после '+CUR+'. Пересказы героев и линий, вопросы клуба и спор критиков недоступны до конца книги.':'Читаете сами? Выберите, до какой главы дошли: всё дальше скроется.';
+    if(D.__gated){ var fb=document.getElementById('fam-block'); if(fb) fb.hidden=true; }
+  })();
   pill.addEventListener('click',function(){ go('chapter',CUR); });
 
   // quote card
@@ -284,8 +317,8 @@
     var hd=el('div','block p-head'); var back=el('a','more-link','← Все герои'); back.href='#people'; hd.appendChild(back);
     hd.appendChild(el('p','eyebrow',p.group)); hd.appendChild(el('h2',null,p.name));
     if(p.aka) hd.appendChild(el('p','p-aka','Также: '+p.aka.join(', ')));
-    hd.appendChild(el('p','lead',p.short)); var cc=el('div','p-chs'); cc.appendChild(el('span','rl','В главах')); chLinks(p.chs,cc); hd.appendChild(cc); box.appendChild(hd);
-    var bio=el('div','block'); bio.appendChild(el('h3',null,'Кто это')); var bc=el('div','card p-bio'); p.bio.forEach(function(t){ bc.appendChild(el('p',null,t)); }); bio.appendChild(bc); box.appendChild(bio);
+    if(p.short) hd.appendChild(el('p','lead',p.short)); var cc=el('div','p-chs'); cc.appendChild(el('span','rl','В главах')); chLinks(p.chs,cc); hd.appendChild(cc); box.appendChild(hd);
+    if(p.bio.length){ var bio=el('div','block'); bio.appendChild(el('h3',null,'Кто это')); var bc=el('div','card p-bio'); p.bio.forEach(function(t){ bc.appendChild(el('p',null,t)); }); bio.appendChild(bc); box.appendChild(bio); }
     var evs=p.ev.filter(function(e){ return nums(e.ch).every(function(n){ return n<=CUR; }); });
     if(evs.length){ var eb=el('div','block'); eb.appendChild(el('h3',null,'По главам')); var ol=el('ol','p-ev card');
       evs.forEach(function(e){ var li=el('li'); var a=el('a','chl','гл. '+e.ch); a.href='#ch-'+nums(e.ch)[0]; li.appendChild(a); li.appendChild(el('span',null,e.t)); ol.appendChild(li); }); eb.appendChild(ol); box.appendChild(eb); }
@@ -338,5 +371,5 @@
   var r0=parse(); show(r0[0],r0[1]);
 }
   fetch('data.json',{cache:'no-cache'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-    .then(start).catch(function(e){ var m=document.createElement('p'); m.className='wrap empty'; m.textContent='Не удалось загрузить данные дневника ('+e.message+'). Обнови страницу.'; document.querySelector('main').prepend(m); });
+    .then(function(D){ var R=0; try{ R=+localStorage.getItem('eoe-read')||0; }catch(e){} start(window.__eoeGate(D,R)); }).catch(function(e){ var m=document.createElement('p'); m.className='wrap empty'; m.textContent='Не удалось загрузить данные дневника ('+e.message+'). Обнови страницу.'; document.querySelector('main').prepend(m); });
 })();

@@ -21,6 +21,7 @@
       <button class="where-pill" id="where-pill" type="button"></button>
     </div>
     <div class="progress"><div class="bar"><i id="bar"></i></div><span id="pct"></span></div>
+    <div class="readpos"><label for="read-sel">Мой прогресс: прочитано до</label><select id="read-sel"></select><p class="hint" id="read-note"></p></div>
   </div>
 </header>
 
@@ -103,7 +104,7 @@
         <input class="search" id="cast-q" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" autocomplete="off">
         <div id="cast-list" style="display:flex;flex-direction:column;gap:16px"></div>
       </div>
-      <div class="block">
+      <div class="block" id="fam-block">
         <header><h3>Семьи</h3><p class="lead">Только то, что названо в тексте. Пунктир — человек есть, но имени нет.</p></header>
         <div class="families">
         <article class="fam" aria-label="Гамильтоны">
