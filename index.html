@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <header class="top">
@@ -76,6 +76,12 @@
   <!-- СМЫСЛЫ -->
   <section class="view" id="v-meanings" data-view="meanings" hidden>
     <div class="wrap">
+      <div class="block">
+        <header><h2>Карта идей</h2><p class="lead" id="idea-lead"></p></header>
+        <div class="idea-wrap"><svg id="idea-svg" viewBox="0 0 400 400" role="img" aria-label="Граф мотивов романа"></svg>
+        <div class="legend idea-legend"><span class="lg-l">связь</span><span class="lg-t">противоречие</span></div></div>
+        <div id="idea-detail"></div>
+      </div>
       <div class="block">
         <header><h2>Смыслы</h2><p class="lead">Символы и мотивы с привязкой к тексту. У каждого несколько прочтений, правильного нет.</p></header>
         <div class="mean" id="mean"></div>
@@ -182,6 +188,10 @@
         <div class="swim" id="swim-people"></div>
       </div>
       <div class="block">
+        <header><h3>Две шкалы: история и роман</h3><p class="lead">Слева реальные события эпохи (подробнее во вкладке «Мир»), справа — события романа. Шкалы независимы, их связывают только годы.</p></header>
+        <div class="dual" id="dual"></div>
+      </div>
+      <div class="block">
         <header><h3>Хронология</h3><p class="lead">Даты из текста; расчётные годы помечены.</p></header>
         <div class="legend"><span style="--c:var(--valley)">Долина</span><span style="--c:var(--poppy)">Гамильтоны</span><span style="--c:var(--lupine)">Траски</span><span style="--c:var(--muted)">Кэти и Фей</span></div>
         <ol class="tl" id="tl"></ol>
@@ -215,7 +225,7 @@
   </section>
 </main>
 
-<script src="theme.js?v=12"></script>
-<script src="app.js?v=12" defer></script>
+<script src="theme.js?v=13"></script>
+<script src="app.js?v=13" defer></script>
 </body>
 </html>

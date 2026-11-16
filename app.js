@@ -309,6 +309,57 @@
     ss.slice().reverse().forEach(function(s){ l.insertBefore(jStory(s,false,false),l.firstChild); });
     if(ss.length) document.getElementById('ch-j-block').hidden=false; };
 
+
+  // КАРТА ИДЕЙ
+  (function(){ var I=D.ideas; var svg=document.getElementById('idea-svg'); if(!I||!svg) return;
+    document.getElementById('idea-lead').textContent=I.lead;
+    var NS='http://www.w3.org/2000/svg'; function S(t,at){ var n=document.createElementNS(NS,t); for(var k in at) n.setAttribute(k,at[k]); return n; }
+    var nodes=I.nodes.filter(function(n){ return n.ch<=CUR; }), NI={}; nodes.forEach(function(n){ NI[n.id]=n; });
+    var edges=I.edges.filter(function(e){ return e.ch<=CUR&&NI[e.a]&&NI[e.b]; });
+    var cx=200, cy=200, R=128, pos={};
+    nodes.forEach(function(n,i){ var a=-Math.PI/2+i*2*Math.PI/nodes.length; pos[n.id]={x:cx+R*Math.cos(a),y:cy+R*Math.sin(a),a:a}; });
+    var gE=S('g',{}), gN=S('g',{}); svg.appendChild(gE); svg.appendChild(gN); var eEls=[], nEls={};
+    edges.forEach(function(e){ var A=pos[e.a],B=pos[e.b]; var mx=(A.x+B.x)/2, my=(A.y+B.y)/2; var qx=mx+(cx-mx)*0.35, qy=my+(cy-my)*0.35;
+      var p=S('path',{d:'M'+A.x+' '+A.y+' Q'+qx+' '+qy+' '+B.x+' '+B.y,'class':'ie '+(e.type==='tension'?'ie-t':'ie-l')}); p.__e=e; gE.appendChild(p); eEls.push(p); });
+    nodes.forEach(function(n){ var P=pos[n.id]; var g=S('g',{'class':'in',tabindex:'0',role:'button','aria-label':n.name}); 
+      g.appendChild(S('circle',{cx:P.x,cy:P.y,r:22,'class':'in-hit'})); g.appendChild(S('circle',{cx:P.x,cy:P.y,r:7,'class':'in-dot'}));
+      var c=Math.cos(P.a), s=Math.sin(P.a); var tx=P.x+c*16, ty=P.y+s*16+(s>0.3?10:(s<-0.3?-4:4));
+      var t=S('text',{x:tx,y:ty,'text-anchor':Math.abs(c)<0.3?'middle':(c>0?'start':'end'),'class':'in-t'}); t.textContent=n.label; g.appendChild(t);
+      g.addEventListener('click',function(){ pick(n.id,true); }); g.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); pick(n.id,true); } });
+      gN.appendChild(g); nEls[n.id]=g; });
+    var det=document.getElementById('idea-detail');
+    function pick(id,scroll){ var n=NI[id]; if(!n) return;
+      Object.keys(nEls).forEach(function(k){ var on=k===id, nb=edges.some(function(e){ return (e.a===id&&e.b===k)||(e.b===id&&e.a===k); }); nEls[k].setAttribute('class','in'+(on?' sel':nb?' nb':' dim')); });
+      eEls.forEach(function(p){ var e=p.__e, on=e.a===id||e.b===id; p.setAttribute('class','ie '+(e.type==='tension'?'ie-t':'ie-l')+(on?' on':' dim')); });
+      det.textContent=''; var c=el('article','card idea-card'); c.appendChild(el('p','eyebrow','Мотив')); c.appendChild(el('h3',null,n.name)); c.appendChild(el('p','lead',n.short));
+      var st=n.stages.filter(function(s){ return s.ch<=CUR; }); var chs=el('div','p-chs'); chs.appendChild(el('span','rl','В главах')); chLinks(st.map(function(s){ return s.ch; }).join(', '),chs); c.appendChild(chs);
+      if(st.length){ c.appendChild(el('h4',null,'Как меняется смысл')); var ol=el('ol','p-ev'); st.forEach(function(s){ var li=el('li'); var a=el('a','chl','гл. '+s.ch); a.href='#ch-'+s.ch; li.appendChild(a); li.appendChild(el('span',null,s.t)); ol.appendChild(li); }); c.appendChild(ol); }
+      ['link','tension'].forEach(function(tp){ var es=edges.filter(function(e){ return e.type===tp&&(e.a===id||e.b===id); }); if(!es.length) return;
+        c.appendChild(el('h4',null,tp==='link'?'Связи':'Противоречия')); var ul=el('ul','idea-rel '+(tp==='tension'?'t':'l'));
+        es.forEach(function(e){ var o=e.a===id?e.b:e.a; var li=el('li'); var b=el('button','chip',NI[o].name); b.type='button'; b.addEventListener('click',function(){ pick(o,true); }); li.appendChild(b); li.appendChild(el('span',null,e.t)); ul.appendChild(li); }); c.appendChild(ul); });
+      var ps=(n.people||[]).filter(function(x){ return PID[x]&&nums(PID[x].chs).some(function(k){ return k<=CUR; }); }); if(ps.length){ c.appendChild(el('h4',null,'Герои')); var pc=el('div','pchips'); ps.forEach(function(x){ var a=el('a','chip',PID[x].name); a.href='#p-'+x; pc.appendChild(a); }); c.appendChild(pc); }
+      det.appendChild(c);
+      var re; try{ re=new RegExp(n.qre,'i'); }catch(err){ re=null; }
+      var qs=re?sorted.filter(function(q){ return chOf(q)<=CUR&&re.test(q.text); }).slice(0,5):[];
+      if(qs.length){ var qb=el('div','idea-q'); qb.appendChild(el('h4',null,'Цитаты')); var ql=el('div','quotes'); qs.forEach(function(q){ ql.appendChild(quoteCard(q)); }); qb.appendChild(ql); det.appendChild(qb); }
+      if(scroll) det.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+    pick(nodes[0].id,false); })();
+
+  // ДВЕ ШКАЛЫ
+  (function(){ var box=document.getElementById('dual'); if(!box) return;
+    var H=(D.history||[]).filter(function(h){ return !h.ch||h.ch<=CUR; }), T=D.timeline.filter(function(e){ return e.y&&(!e.ch||e.ch<=CUR); });
+    var KN={economy:'экономика',tech:'техника',society:'общество',history:'история'};
+    var hd=el('div','dl-row dl-head'); hd.appendChild(el('span',null,'История')); hd.appendChild(el('span',null,'Роман')); box.appendChild(hd);
+    var y0=Math.floor(Math.min.apply(null,H.map(function(h){ return h.y; }).concat(T.map(function(e){ return e.y; })))/10)*10;
+    var y1=Math.max.apply(null,H.map(function(h){ return h.y; }).concat(T.map(function(e){ return e.y; })));
+    for(var dec=y0;dec<=y1;dec+=10){ (function(dec){ var hs=H.filter(function(h){ return h.y>=dec&&h.y<dec+10; }), ts=T.filter(function(e){ return e.y>=dec&&e.y<dec+10; }); if(!hs.length&&!ts.length) return;
+      box.appendChild(el('div','dl-dec',dec+'-е'));
+      var row=el('div','dl-row'); var L=el('div','dl-col dl-h'), Rc=el('div','dl-col dl-n');
+      hs.forEach(function(h){ var it=h.w?el('a','dl-it'):el('div','dl-it'); if(h.w) it.href='#world'; it.appendChild(el('span','dl-w',h.when+(KN[h.kind]&&!h.w?' · '+KN[h.kind]:''))); it.appendChild(el('span','dl-t',h.t)); L.appendChild(it); });
+      ts.forEach(function(e){ var it=el('div','dl-it lane-'+e.lane); it.appendChild(el('span','dl-w',e.when)); it.appendChild(el('span','dl-t',e.text)); var a=el('a','chl',e.src); a.href='#ch-'+(e.ch||1); it.appendChild(a); Rc.appendChild(it); });
+      if(!hs.length) L.appendChild(el('span','dl-empty','—')); if(!ts.length) Rc.appendChild(el('span','dl-empty','—'));
+      row.appendChild(L); row.appendChild(Rc); box.appendChild(row); })(dec); }
+  })();
   // СТРАНИЦА ГЕРОЯ: #p-id
   function linkName(id){ var p=PID[id]; var a=el('a','plink',p?p.name:id); a.href='#p-'+id; return a; }
   function patRe(p){ try{ return p.pat?new RegExp(p.pat):null; }catch(e){ return null; } }
@@ -354,7 +405,7 @@
         frag.appendChild(document.createTextNode(s.slice(last,m.index))); var a=document.createElement('a'); a.className='auto'; a.href=href; a.textContent=m[0]; frag.appendChild(a); last=m.index+m[0].length; }
       if(frag){ frag.appendChild(document.createTextNode(s.slice(last))); t.parentNode.replaceChild(frag,t); } });
   }
-  function linkAll(){ ['ch-summary','ch-ctx','ch-mean','lines','tl','cast-list','w-sections','ch-world','person','mean','deb','qs','qlist','ch-quotes'].forEach(function(id){ var r=document.getElementById(id); if(r) linkify(r,false); });
+  function linkAll(){ ['ch-summary','ch-ctx','ch-mean','lines','tl','cast-list','w-sections','ch-world','person','dual','mean','deb','qs','qlist','ch-quotes'].forEach(function(id){ var r=document.getElementById(id); if(r) linkify(r,false); });
     ['j-list','ch-journal'].forEach(function(id){ var r=document.getElementById(id); if(r) linkify(r,true); }); }
   var lt=null; new MutationObserver(function(){ if(lt) return; lt=setTimeout(function(){ lt=null; linkAll(); },30); }).observe(document.querySelector('main'),{childList:true,subtree:true}); linkAll();
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
