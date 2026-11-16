@@ -394,13 +394,13 @@
 
   // АВТОССЫЛКИ: имена героев → справка, «гл. N» → глава
   var LP=PROF.filter(function(p){ return p.pat&&!p.nolink; }).map(function(p){ return {id:p.id,re:p.pat}; });
-  var BIG=new RegExp('(гл\\.\\s?\\d+(?:[–-]\\d+)?)|'+LP.map(function(x){ return '('+x.re+')'; }).join('|'),'g');
+  var BIG=new RegExp('(гл\\.\\s?\\d+(?:[–-]\\d+)?)'+LP.map(function(x){ return '|('+x.re+')'; }).join(''),'g');
   var SKIP='A,BUTTON,INPUT,TEXTAREA,SCRIPT,STYLE,SUMMARY,H1,H2,NAV,SELECT,OPTION,LABEL';
   function linkify(root,noPeople){
     var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(t){ for(var e=t.parentNode;e&&e!==root.parentNode;e=e.parentNode){ if(e.nodeType===1&&(SKIP.indexOf(e.tagName)>-1||e.classList.contains('nolink'))) return NodeFilter.FILTER_REJECT; } return /\S/.test(t.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }}), list=[];
     while(w.nextNode()) list.push(w.currentNode);
     list.forEach(function(t){ var s=t.nodeValue, last=0, frag=null, m; BIG.lastIndex=0;
-      while((m=BIG.exec(s))){ var href=null;
+      while((m=BIG.exec(s))){ if(!m[0]){ BIG.lastIndex++; continue; } var href=null;
         if(m[1]){ var n=nums(m[1])[0]; if(n<=CUR) href='#ch-'+n; }
         else if(!noPeople){ for(var i=0;i<LP.length;i++){ if(m[i+2]){ href='#p-'+LP[i].id; break; } } }
         if(!href) continue; if(!frag) frag=document.createDocumentFragment();
