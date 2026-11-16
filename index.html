@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <header class="top">
@@ -51,6 +51,7 @@
         <h2 id="ch-title"></h2>
       </div>
       <div class="block"><ul class="summary" id="ch-summary"></ul><p class="boundary" id="ch-boundary" hidden></p></div>
+      <div class="block" id="ch-p-block"><header><h3>Герои главы</h3></header><div class="pchips" id="ch-people"></div></div>
       <div class="block" id="ch-ctx-block"><header><h3>Контекст</h3><p class="lead">История и реалии главы. <span class="kind fact">Факт</span> отдельно от <span class="kind reading">Трактовки</span>.</p></header><div class="card"><ul class="ctx-list" id="ch-ctx"></ul></div></div>
       <div class="block" id="ch-q-block"><header><h3>Цитаты главы</h3></header><div class="quotes" id="ch-quotes"></div></div>
       <div class="block" id="ch-m-block"><header><h3>Смыслы в этой главе</h3></header><div class="mean" id="ch-mean"></div></div>
@@ -93,7 +94,12 @@
   <section class="view" id="v-people" data-view="people" hidden>
     <div class="wrap">
       <div class="block">
-        <header><h2>Кто есть кто</h2></header>
+        <header><h2>Главные герои</h2><p class="lead">Подробная справка о каждом: история, события по главам, связи, цитаты и заметки Стейнбека. Только до прочитанного места.</p></header>
+        <div id="prof-grid"></div>
+      </div>
+      <div class="block">
+        <header><h2>Кто есть кто</h2><p class="lead">Все персонажи по семьям. Подчёркнутое имя открывает справку.</p></header>
+        <div class="chips" id="cast-jump" role="group" aria-label="Семьи"></div>
         <input class="search" id="cast-q" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" autocomplete="off">
         <div id="cast-list" style="display:flex;flex-direction:column;gap:16px"></div>
       </div>
@@ -163,12 +169,20 @@
   <section class="view" id="v-story" data-view="story" hidden>
     <div class="wrap">
       <div class="block">
-        <header><h2>Сюжетные линии</h2><p class="lead">Где каждая линия остановилась к текущему месту.</p></header>
+        <header><h2>Сюжетные линии</h2><p class="lead">Карта: в каких главах идёт каждая линия. Клетка открывает главу, название — описание линии.</p></header>
+        <div class="swim" id="swim-lines"></div>
+      </div>
+      <div class="block">
+        <header><h3>Где каждая линия остановилась</h3></header>
         <div class="quotes" id="lines"></div>
       </div>
       <div class="block">
+        <header><h3>Кто в какой главе</h3><p class="lead">Главные герои по главам. Имя открывает справку.</p></header>
+        <div class="swim" id="swim-people"></div>
+      </div>
+      <div class="block">
         <header><h3>Хронология</h3><p class="lead">Даты из текста; расчётные годы помечены.</p></header>
-        <div class="legend"><span style="--c:var(--valley)">Долина</span><span style="--c:var(--poppy)">Гамильтоны</span><span style="--c:var(--lupine)">Траски</span></div>
+        <div class="legend"><span style="--c:var(--valley)">Долина</span><span style="--c:var(--poppy)">Гамильтоны</span><span style="--c:var(--lupine)">Траски</span><span style="--c:var(--muted)">Кэти и Фей</span></div>
         <ol class="tl" id="tl"></ol>
       </div>
       <div class="block">
@@ -184,6 +198,10 @@
       <div class="jlist" id="j-list"></div>
     </div>
   </section>
+  <!-- ГЕРОЙ -->
+  <section class="view" id="v-person" data-view="person" hidden>
+    <div class="wrap" id="person"></div>
+  </section>
   <!-- МИР -->
   <section class="view" id="v-world" data-view="world" hidden>
     <div class="wrap">
@@ -196,7 +214,7 @@
   </section>
 </main>
 
-<script src="theme.js?v=10"></script>
-<script src="app.js?v=10" defer></script>
+<script src="theme.js?v=11"></script>
+<script src="app.js?v=11" defer></script>
 </body>
 </html>

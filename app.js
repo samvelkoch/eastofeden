@@ -99,20 +99,43 @@
 
   // PEOPLE view
   var cl=document.getElementById('cast-list'), cq=document.getElementById('cast-q');
+  var PROF=(D.profiles||[]), PID={}; PROF.forEach(function(p){ PID[p.id]=p; });
+  function chLinks(str,box){ nums(str).filter(function(n){ return n<=CUR; }).forEach(function(n){ var b=el('a','chl','гл. '+n); b.href='#ch-'+n; box.appendChild(b); }); }
+  var GCLS={'Гамильтоны':'g-ham','Траски':'g-tra','Эймсы и Бостон':'g-ames','Эймсы':'g-ames','Остальные':'g-oth','Салинас: Ряд':'g-row'};
+  var jump=document.getElementById('cast-jump');
+  D.cast.forEach(function(g,i){ var b=el('a','chip',g.group); b.href='#people'; b.addEventListener('click',function(e){ e.preventDefault(); var t=document.getElementById('cg-'+i); if(t) t.scrollIntoView({block:'start',behavior:'smooth'}); }); b.appendChild(el('span','n',String(g.people.length))); jump.appendChild(b); });
   function renderCast(){ var f=(cq.value||'').trim().toLowerCase(); cl.textContent=''; var any=false;
-    D.cast.forEach(function(g){ var rows=g.people.filter(function(p){ return !f||(p[0]+' '+p[1]).toLowerCase().indexOf(f)>-1; }); if(!rows.length) return; any=true;
-      var w=el('div','cast-group'); w.appendChild(el('h3',null,g.group)); var sc=el('div','scroll'); var t=el('table','plain'); var tb=el('tbody');
-      rows.forEach(function(p){ var tr=el('tr'); tr.appendChild(el('td','k',p[0])); tr.appendChild(el('td',null,p[1])); tr.appendChild(el('td','m',p[2])); tb.appendChild(tr); });
-      t.appendChild(tb); sc.appendChild(t); w.appendChild(sc); cl.appendChild(w); });
+    D.cast.forEach(function(g,gi){ var rows=g.people.filter(function(p){ return !f||(p[0]+' '+p[1]).toLowerCase().indexOf(f)>-1; }); if(!rows.length) return; any=true;
+      var w=el('section','cg '+(GCLS[g.group]||'g-oth')); w.id='cg-'+gi; var hd=el('header','cg-h'); hd.appendChild(el('h3',null,g.group)); hd.appendChild(el('span','n',rows.length+' '+(rows.length===1?'персонаж':'персонажей'))); w.appendChild(hd);
+      var ul=el('ul','cp-list');
+      rows.forEach(function(p){ var li=el('li','cp'), id=p[3]||null; var nm=id?el('a','cp-n',p[0]):el('span','cp-n',p[0]); if(id) nm.href='#p-'+id; li.appendChild(nm);
+        li.appendChild(el('p','cp-d',p[1])); var c=el('div','cp-c'); chLinks(p[2],c); li.appendChild(c); ul.appendChild(li); });
+      w.appendChild(ul); cl.appendChild(w); });
     if(!any) cl.appendChild(el('p','empty','Никого не нашлось. Попробуй имя или роль: «брат», «салун».')); }
+  // карточки главных героев, по семьям
+  (function(){ var pg=document.getElementById('prof-grid'); if(!pg) return; var groups=[];
+    PROF.forEach(function(p){ if(groups.indexOf(p.group)<0) groups.push(p.group); });
+    groups.forEach(function(gname){ var w=el('section','pg '+(GCLS[gname]||'g-oth')); w.appendChild(el('h3','pg-h',gname)); var grid=el('div','pg-grid');
+      PROF.filter(function(p){ return p.group===gname; }).forEach(function(p){ var a=el('a','card pcard'); a.href='#p-'+p.id; a.appendChild(el('b',null,p.name)); a.appendChild(el('span',null,p.short)); grid.appendChild(a); });
+      w.appendChild(grid); pg.appendChild(w); }); })();
   cq.addEventListener('input',renderCast); renderCast();
 
   // STORY view
   var ll=document.getElementById('lines');
-  (D.storylines||[]).forEach(function(L){ var a=el('article','card line'); var h=el('div','hd'); h.appendChild(el('h3',null,L.title)); h.appendChild(el('span','chs',L.chapters)); a.appendChild(h);
+  (D.storylines||[]).forEach(function(L,i){ var a=el('article','card line'); a.id='line-'+i; var h=el('div','hd'); h.appendChild(el('h3',null,L.title)); h.appendChild(el('span','chs',L.chapters)); a.appendChild(h);
     var ol=el('ol'); L.beats.forEach(function(b){ ol.appendChild(el('li',null,b)); }); a.appendChild(ol);
     var n=el('p','now'); n.appendChild(el('b',null,'Где остановились: ')); n.appendChild(document.createTextNode(L.now)); a.appendChild(n); ll.appendChild(a); });
-  var lane={valley:'var(--valley)',ham:'var(--poppy)',tra:'var(--lupine)'}; var tl=document.getElementById('tl');
+
+  // карта линий и героев по главам
+  function swim(box,rows){ if(!box) return; var cols='minmax(0,1fr)'; var head=el('div','sw-row sw-head'); head.appendChild(el('span','sw-l',''));
+    var hc=el('div','sw-cells'); hc.style.setProperty('--n',CUR); for(var c=1;c<=CUR;c++){ hc.appendChild(el('span','sw-n',(c===1||c%5===0||c===CUR)?String(c):'')); } head.appendChild(hc); box.appendChild(head);
+    rows.forEach(function(r){ var row=el('div','sw-row'+(r.cls?' '+r.cls:'')); var lab=el('a','sw-l nolink',r.label); lab.href=r.href; if(r.onclick) lab.addEventListener('click',r.onclick); row.appendChild(lab);
+      var cells=el('div','sw-cells'); cells.style.setProperty('--n',CUR); var on=nums(r.chs);
+      for(var c=1;c<=CUR;c++){ if(on.indexOf(c)>-1){ var x=el('a','sw-c on'); x.href='#ch-'+c; x.title='гл. '+c; x.setAttribute('aria-label',r.label+', гл. '+c); cells.appendChild(x); } else cells.appendChild(el('span','sw-c')); }
+      row.appendChild(cells); box.appendChild(row); }); }
+  swim(document.getElementById('swim-lines'),(D.storylines||[]).map(function(L,i){ return {label:L.title,chs:L.chapters,href:'#story',onclick:function(e){ e.preventDefault(); var t=document.getElementById('line-'+i); if(t) t.scrollIntoView({block:'start',behavior:'smooth'}); }}; }));
+  swim(document.getElementById('swim-people'),(D.profiles||[]).filter(function(p){ return !p.nolink||p.id==='narrator'; }).map(function(p){ return {label:p.name,chs:p.chs,href:'#p-'+p.id}; }));
+  var lane={valley:'var(--valley)',ham:'var(--poppy)',tra:'var(--lupine)',ames:'var(--muted)'}; var tl=document.getElementById('tl');
   D.timeline.forEach(function(e){ var li=el('li'); li.style.setProperty('--c',lane[e.lane]||'var(--muted)');
     var w=el('div','when',e.when); if(e.note) w.appendChild(el('small',null,e.note));
     var wt=el('div','what'); wt.appendChild(document.createTextNode(e.text)); wt.appendChild(el('span','src',e.src));
@@ -251,15 +274,65 @@
     var ss=JS.filter(function(s){ return s.ch&&nums(s.ch).indexOf(n)>-1; });
     ss.slice().reverse().forEach(function(s){ l.insertBefore(jStory(s,false,false),l.firstChild); });
     if(ss.length) document.getElementById('ch-j-block').hidden=false; };
+
+  // СТРАНИЦА ГЕРОЯ: #p-id
+  function linkName(id){ var p=PID[id]; var a=el('a','plink',p?p.name:id); a.href='#p-'+id; return a; }
+  function patRe(p){ try{ return p.pat?new RegExp(p.pat):null; }catch(e){ return null; } }
+  function renderPerson(id){ var box=document.getElementById('person'); box.textContent=''; var p=PID[id];
+    if(!p){ box.appendChild(el('p','empty','Такого героя нет.')); return; }
+    var hd=el('div','block p-head'); var back=el('a','more-link','← Все герои'); back.href='#people'; hd.appendChild(back);
+    hd.appendChild(el('p','eyebrow',p.group)); hd.appendChild(el('h2',null,p.name));
+    if(p.aka) hd.appendChild(el('p','p-aka','Также: '+p.aka.join(', ')));
+    hd.appendChild(el('p','lead',p.short)); var cc=el('div','p-chs'); cc.appendChild(el('span','rl','В главах')); chLinks(p.chs,cc); hd.appendChild(cc); box.appendChild(hd);
+    var bio=el('div','block'); bio.appendChild(el('h3',null,'Кто это')); var bc=el('div','card p-bio'); p.bio.forEach(function(t){ bc.appendChild(el('p',null,t)); }); bio.appendChild(bc); box.appendChild(bio);
+    var evs=p.ev.filter(function(e){ return nums(e.ch).every(function(n){ return n<=CUR; }); });
+    if(evs.length){ var eb=el('div','block'); eb.appendChild(el('h3',null,'По главам')); var ol=el('ol','p-ev card');
+      evs.forEach(function(e){ var li=el('li'); var a=el('a','chl','гл. '+e.ch); a.href='#ch-'+nums(e.ch)[0]; li.appendChild(a); li.appendChild(el('span',null,e.t)); ol.appendChild(li); }); eb.appendChild(ol); box.appendChild(eb); }
+    if(p.rel&&p.rel.length){ var rb=el('div','block'); rb.appendChild(el('h3',null,'Связи')); var ul=el('ul','p-rel card');
+      p.rel.forEach(function(r){ var li=el('li'); li.appendChild(PID[r.id]&&!PID[r.id].nolink||PID[r.id]?linkName(r.id):el('b',null,r.id)); li.appendChild(el('span',null,' — '+r.t)); ul.appendChild(li); }); rb.appendChild(ul); box.appendChild(rb); }
+    var re=patRe(p);
+    var lines=(D.storylines||[]).filter(function(L){ return re&&re.test(L.title); });
+    if(lines.length){ var lb=el('div','block'); lb.appendChild(el('h3',null,'Сюжетные линии')); lines.forEach(function(L){ var a=el('a','card pline'); a.href='#story'; a.appendChild(el('b',null,L.title)); a.appendChild(el('span',null,'Где остановились: '+L.now)); lb.appendChild(a); }); box.appendChild(lb); }
+    var qs=re?sorted.filter(function(q){ return chOf(q)<=CUR&&(re.test(q.text)||re.test(q.context||'')); }):[];
+    if(qs.length){ var qb=el('div','block'); qb.appendChild(el('h3',null,'Цитаты ('+qs.length+')')); var ql=el('div','quotes'); qs.forEach(function(q){ ql.appendChild(quoteCard(q)); }); qb.appendChild(ql); box.appendChild(qb); }
+    var ms=re?(D.meanings||[]).filter(function(m){ return re.test(JSON.stringify(m)); }):[];
+    if(ms.length){ var mb=el('div','block'); mb.appendChild(el('h3',null,'Смыслы')); var mm=el('div','mean'); ms.forEach(function(m){ mm.appendChild(meaningCard(m)); }); mb.appendChild(mm); box.appendChild(mb); }
+    var js=(typeof JN!=='undefined'?JN:[]).filter(function(e){ return (p.j||[]).indexOf(e.n)>-1; });
+    if(js.length){ var jb=el('div','block'); jb.appendChild(el('h3',null,'Стейнбек о герое')); var jl=el('div','jlist nolink'); js.forEach(function(e){ jl.appendChild(jCard(e,true)); }); jb.appendChild(jl); box.appendChild(jb); }
+  }
+  // «Герои главы» на экране главы
+  var _rc4=renderChapter; renderChapter=function(n){ _rc4(n); var b=document.getElementById('ch-people'); if(!b) return; b.textContent='';
+    var ps=PROF.filter(function(p){ return nums(p.chs).indexOf(n)>-1; }); document.getElementById('ch-p-block').hidden=!ps.length;
+    ps.forEach(function(p){ var a=el('a','chip',p.name); a.href='#p-'+p.id; b.appendChild(a); }); };
+
+  // АВТОССЫЛКИ: имена героев → справка, «гл. N» → глава
+  var LP=PROF.filter(function(p){ return p.pat&&!p.nolink; }).map(function(p){ return {id:p.id,re:p.pat}; });
+  var BIG=new RegExp('(гл\\.\\s?\\d+(?:[–-]\\d+)?)|'+LP.map(function(x){ return '('+x.re+')'; }).join('|'),'g');
+  var SKIP='A,BUTTON,INPUT,TEXTAREA,SCRIPT,STYLE,SUMMARY,H1,H2,NAV,SELECT,OPTION,LABEL';
+  function linkify(root,noPeople){
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(t){ for(var e=t.parentNode;e&&e!==root.parentNode;e=e.parentNode){ if(e.nodeType===1&&(SKIP.indexOf(e.tagName)>-1||e.classList.contains('nolink'))) return NodeFilter.FILTER_REJECT; } return /\S/.test(t.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }}), list=[];
+    while(w.nextNode()) list.push(w.currentNode);
+    list.forEach(function(t){ var s=t.nodeValue, last=0, frag=null, m; BIG.lastIndex=0;
+      while((m=BIG.exec(s))){ var href=null;
+        if(m[1]){ var n=nums(m[1])[0]; if(n<=CUR) href='#ch-'+n; }
+        else if(!noPeople){ for(var i=0;i<LP.length;i++){ if(m[i+2]){ href='#p-'+LP[i].id; break; } } }
+        if(!href) continue; if(!frag) frag=document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(s.slice(last,m.index))); var a=document.createElement('a'); a.className='auto'; a.href=href; a.textContent=m[0]; frag.appendChild(a); last=m.index+m[0].length; }
+      if(frag){ frag.appendChild(document.createTextNode(s.slice(last))); t.parentNode.replaceChild(frag,t); } });
+  }
+  function linkAll(){ ['ch-summary','ch-ctx','ch-mean','lines','tl','cast-list','w-sections','ch-world','person','mean','deb','qs','qlist','ch-quotes'].forEach(function(id){ var r=document.getElementById(id); if(r) linkify(r,false); });
+    ['j-list','ch-journal'].forEach(function(id){ var r=document.getElementById(id); if(r) linkify(r,true); }); }
+  var lt=null; new MutationObserver(function(){ if(lt) return; lt=setTimeout(function(){ lt=null; linkAll(); },30); }).observe(document.querySelector('main'),{childList:true,subtree:true}); linkAll();
   // routing: #chapter, #ch-3, #quotes, #meanings, #people, #story
-  var tabs=['chapter','quotes','meanings','people','story','world','journal'];
+  var tabs=['chapter','quotes','meanings','people','story','world','journal','person'];
   function show(tab,n){
     tabs.forEach(function(t){ document.getElementById('v-'+t).hidden=(t!==tab); });
     Array.prototype.forEach.call(document.querySelectorAll('nav.tabbar a'),function(a){ if(a.dataset.tab===tab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
     if(tab==='chapter') renderChapter(Math.min(Math.max(n||chState,1),MAXCH));
+    if(tab==='person'){ renderPerson(n); var pa=document.querySelector('nav.tabbar a[data-tab="people"]'); if(pa) pa.setAttribute('aria-current','page'); }
   }
-  function parse(){ var h=(location.hash||'').slice(1); var m=h.match(/^ch-(\d+)$/); if(m) return ['chapter',+m[1]]; if(tabs.indexOf(h)>-1) return [h,null]; return ['chapter',CUR]; }
-  function go(tab,n){ var h=tab==='chapter'&&n?'ch-'+n:tab; if(location.hash.slice(1)===h){ show(tab,n); } else { location.hash=h; } window.scrollTo(0,0); }
+  function parse(){ var h=(location.hash||'').slice(1); var m=h.match(/^ch-(\d+)$/); if(m) return ['chapter',+m[1]]; var pm=h.match(/^p-([a-z]+)$/); if(pm) return ['person',pm[1]]; if(tabs.indexOf(h)>-1) return [h,null]; return ['chapter',CUR]; }
+  function go(tab,n){ var h=tab==='chapter'&&n?'ch-'+n:(tab==='person'?'p-'+n:tab); if(location.hash.slice(1)===h){ show(tab,n); } else { location.hash=h; } window.scrollTo(0,0); }
   window.addEventListener('hashchange',function(){ var r=parse(); show(r[0],r[1]); window.scrollTo(0,0); });
   var r0=parse(); show(r0[0],r0[1]);
 }
