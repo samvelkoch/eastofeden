@@ -316,7 +316,7 @@
     var NS='http://www.w3.org/2000/svg'; function S(t,at){ var n=document.createElementNS(NS,t); for(var k in at) n.setAttribute(k,at[k]); return n; }
     var nodes=I.nodes.filter(function(n){ return n.ch<=CUR; }), NI={}; nodes.forEach(function(n){ NI[n.id]=n; });
     var edges=I.edges.filter(function(e){ return e.ch<=CUR&&NI[e.a]&&NI[e.b]&&txtOK(e.t); });
-    var cx=200, cy=200, R=128, pos={};
+    var cx=220, cy=220, R=150, pos={}, ALL=false;
     nodes.forEach(function(n,i){ var a=-Math.PI/2+i*2*Math.PI/nodes.length; pos[n.id]={x:cx+R*Math.cos(a),y:cy+R*Math.sin(a),a:a}; });
     var gE=S('g',{}), gN=S('g',{}); svg.appendChild(gE); svg.appendChild(gN); var eEls=[], nEls={};
     edges.forEach(function(e){ var A=pos[e.a],B=pos[e.b]; var mx=(A.x+B.x)/2, my=(A.y+B.y)/2; var qx=mx+(cx-mx)*0.35, qy=my+(cy-my)*0.35;
@@ -328,10 +328,11 @@
       g.addEventListener('click',function(){ pick(n.id,true); }); g.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); pick(n.id,true); } });
       gN.appendChild(g); nEls[n.id]=g; });
     function txtOK(s){ var re=/гл\.\s*(\d+)/g, m; while((m=re.exec(s||''))){ if(+m[1]>CUR) return false; } return true; }
+    var cur=null; var tg=document.getElementById('idea-all'); if(tg) tg.addEventListener('click',function(){ ALL=!ALL; tg.setAttribute('aria-pressed',ALL?'true':'false'); pick(cur,false); });
     var det=document.getElementById('idea-detail');
     function pick(id,scroll){ var n=NI[id]; if(!n) return;
       Object.keys(nEls).forEach(function(k){ var on=k===id, nb=edges.some(function(e){ return (e.a===id&&e.b===k)||(e.b===id&&e.a===k); }); nEls[k].setAttribute('class','in'+(on?' sel':nb?' nb':' dim')); });
-      eEls.forEach(function(p){ var e=p.__e, on=e.a===id||e.b===id; p.setAttribute('class','ie '+(e.type==='tension'?'ie-t':'ie-l')+(on?' on':' dim')); });
+      eEls.forEach(function(p){ var e=p.__e, on=e.a===id||e.b===id; p.setAttribute('class','ie '+(e.type==='tension'?'ie-t':'ie-l')+(on?' on':(ALL?' dim':' off'))); }); cur=id;
       det.textContent=''; var c=el('article','card idea-card'); c.appendChild(el('p','eyebrow','Мотив')); c.appendChild(el('h3',null,n.name)); if(txtOK(n.short)) c.appendChild(el('p','lead',n.short));
       var st=n.stages.filter(function(s){ return s.ch<=CUR; }); var chs=el('div','p-chs'); chs.appendChild(el('span','rl','В главах')); chLinks(st.map(function(s){ return s.ch; }).join(', '),chs); c.appendChild(chs);
       if(st.length){ c.appendChild(el('h4',null,'Как меняется смысл')); var ol=el('ol','p-ev'); st.forEach(function(s){ var li=el('li'); var a=el('a','chl','гл. '+s.ch); a.href='#ch-'+s.ch; li.appendChild(a); li.appendChild(el('span',null,s.t)); ol.appendChild(li); }); c.appendChild(ol); }

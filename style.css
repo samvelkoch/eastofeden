@@ -428,7 +428,7 @@ a.sw-c.on:hover{opacity:.6}
 .in-t{font:500 12.5px var(--f-body);fill:var(--ink)}
 .in.sel .in-dot{fill:var(--ink);r:9}
 .in.sel .in-t{font-weight:700}
-.in.dim{opacity:.35}
+.in.dim{opacity:.6}
 .in:focus-visible .in-dot{stroke-width:4}
 .idea-legend{justify-content:center;padding:4px 0 6px}
 .idea-legend span::before{display:none}
@@ -460,3 +460,7 @@ a.dl-it:hover .dl-t{text-decoration:underline}
 .dl-w{font:500 .72rem var(--f-mono);color:var(--muted)}
 .dl-it .chl{align-self:flex-start;margin-top:2px;font-size:.7rem;padding:1px 6px}
 .dl-empty{color:var(--muted)}
+.ie.off{display:none}
+.idea-legend{align-items:center;flex-wrap:wrap;gap:8px 14px}
+.idea-legend .chip{min-height:32px;padding:4px 12px;font-size:.84rem}
+.in-t{font-size:12px}
