@@ -40,7 +40,12 @@
   <!-- ГЛАВА -->
   <section class="view" id="v-chapter" data-view="chapter">
     <div class="wrap">
-      <div class="chips" id="ch-chips" role="group" aria-label="Главы"></div>
+      <div class="chpick">
+        <button type="button" class="cp-step" id="cp-prev" aria-label="Предыдущая глава">←</button>
+        <button type="button" class="cp-main" id="cp-open" aria-expanded="false" aria-controls="cp-grid"><span id="cp-label"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <button type="button" class="cp-step" id="cp-next" aria-label="Следующая глава">→</button>
+        <div class="cp-grid" id="cp-grid" hidden></div>
+      </div>
       <div class="ch-head">
         <p class="eyebrow" id="ch-eyebrow"></p>
         <h2 id="ch-title"></h2>
@@ -88,13 +93,7 @@
   <section class="view" id="v-people" data-view="people" hidden>
     <div class="wrap">
       <div class="block">
-        <header><h2>Впечатления</h2><p class="lead">Короткие заметки читателя по ходу книги и открытые гипотезы. В конце сравним с финалом.</p></header>
-        <div class="att" id="att"></div>
-        <div class="card"><h3>Гипотезы</h3><div class="scroll"><table class="plain"><tbody id="hyp"></tbody></table></div></div>
-        
-      </div>
-      <div class="block">
-        <header><h3>Кто есть кто</h3></header>
+        <header><h2>Кто есть кто</h2></header>
         <input class="search" id="cast-q" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" autocomplete="off">
         <div id="cast-list" style="display:flex;flex-direction:column;gap:16px"></div>
       </div>

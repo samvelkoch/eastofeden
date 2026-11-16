@@ -39,15 +39,20 @@
 
   // CHAPTER view
   var chState=CUR;
-  var chips=document.getElementById('ch-chips');
-  D.chapters.forEach(function(c){
-    var b=el('button','chip'+(c.n===CUR?' now':''),'Гл. '+c.n); b.type='button'; b.id='chip-ch-'+c.n;
-    b.addEventListener('click',function(){ go('chapter',c.n); }); chips.appendChild(b);
-  });
+  var TOTAL=55, cpGrid=document.getElementById('cp-grid'), cpOpen=document.getElementById('cp-open');
+  for(var k=1;k<=TOTAL;k++){ (function(k){ var rd=k<=MAXCH; var b=el('button','cp-cell'+(k===CUR?' now':''),String(k)); b.type='button'; b.id='cp-'+k;
+    if(rd){ b.title=D.chapters[k-1].title; b.addEventListener('click',function(){ setGrid(false); go('chapter',k); }); } else { b.disabled=true; b.title='Ещё не прочитано'; }
+    cpGrid.appendChild(b); })(k); }
+  function setGrid(v){ cpGrid.hidden=!v; cpOpen.setAttribute('aria-expanded',v?'true':'false'); }
+  cpOpen.addEventListener('click',function(){ setGrid(cpGrid.hidden); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') setGrid(false); });
+  document.getElementById('cp-prev').addEventListener('click',function(){ go('chapter',chState-1); });
+  document.getElementById('cp-next').addEventListener('click',function(){ go('chapter',chState+1); });
   function renderChapter(n){
     chState=n; var c=D.chapters[n-1];
-    Array.prototype.forEach.call(chips.children,function(b,i){ b.setAttribute('aria-pressed',i+1===n?'true':'false'); });
-    var act=document.getElementById('chip-ch-'+n); if(act&&act.scrollIntoView) act.scrollIntoView({block:'nearest',inline:'center'});
+    Array.prototype.forEach.call(cpGrid.children,function(b,i){ if(i+1===n) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
+    document.getElementById('cp-label').textContent='Глава '+n+' из '+TOTAL;
+    document.getElementById('cp-prev').disabled=n<=1; document.getElementById('cp-next').disabled=n>=MAXCH;
     document.getElementById('ch-eyebrow').textContent='Глава '+n+(n===CUR?' · читаю сейчас':'');
     document.getElementById('ch-title').textContent=c.title;
     var su=document.getElementById('ch-summary'); su.textContent=''; c.summary.forEach(function(s){ su.appendChild(el('li',null,s)); });
@@ -93,12 +98,6 @@
   var qsl=document.getElementById('qs'); D.questions.forEach(function(q){ var li=el('li'); li.appendChild(el('h3',null,q.q)); li.appendChild(el('p',null,q.d)); qsl.appendChild(li); });
 
   // PEOPLE view
-  var at=document.getElementById('att');
-  (D.attitudes||[]).forEach(function(a){ var c=el('article','card acard'); c.appendChild(el('h3',null,a.who)); var ul=el('ul');
-    a.entries.forEach(function(e){ var li=el('li'); li.appendChild(el('span',null,e.date+' · '+e.where)); li.appendChild(document.createTextNode(e.text)); ul.appendChild(li); });
-    c.appendChild(ul); at.appendChild(c); });
-  var hy=document.getElementById('hyp');
-  (D.hypotheses||[]).forEach(function(h){ var tr=el('tr'); tr.appendChild(el('td','m',h.date+' · '+h.where)); tr.appendChild(el('td',null,h.text)); var td=el('td'); td.style.width='1%'; td.appendChild(el('span','st',h.status)); tr.appendChild(td); hy.appendChild(tr); });
   var cl=document.getElementById('cast-list'), cq=document.getElementById('cast-q');
   function renderCast(){ var f=(cq.value||'').trim().toLowerCase(); cl.textContent=''; var any=false;
     D.cast.forEach(function(g){ var rows=g.people.filter(function(p){ return !f||(p[0]+' '+p[1]).toLowerCase().indexOf(f)>-1; }); if(!rows.length) return; any=true;
