@@ -6047,7 +6047,10 @@
      "img": {
       "file": "H.Ford et sa Ford T.jpg",
       "cap": "Генри Форд и его «модель T».",
-      "credit": "Commons"
+      "credit": "Commons",
+      "license": "Public domain",
+      "full": "img/w/full/726754ad7ce5.jpg",
+      "src": "img/w/726754ad7ce5.jpg"
      }
     },
     {
@@ -6060,7 +6063,10 @@
      "img": {
       "file": "Sears Roebuck and Company Catalog.jpg",
       "cap": "Каталог Sears, Roebuck and Co.",
-      "credit": "Commons"
+      "credit": "Commons",
+      "license": "CC BY-SA 3.0",
+      "full": "img/w/full/695fbf4a8e80.jpg",
+      "src": "img/w/695fbf4a8e80.jpg"
      }
     }
    ]
@@ -6968,7 +6974,10 @@
      "img": {
       "file": "American 19th Century, Portrait of a Man, c. 1850, NGA 163247.jpg",
       "cap": "Дагерротип: портрет мужчины, около 1850 года.",
-      "credit": "National Gallery of Art"
+      "credit": "National Gallery of Art",
+      "license": "CC0",
+      "full": "img/w/full/95f76829a1ac.jpg",
+      "src": "img/w/95f76829a1ac.jpg"
      }
     }
    ]
