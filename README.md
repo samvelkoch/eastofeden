@@ -30,3 +30,8 @@
 - Картинки: `data.json → world[].items[].img = {file, cap, credit}`. `file` — имя файла на Wikimedia Commons (только public domain / свободные лицензии); превью грузится через `Special:FilePath?width=640`, на сайте показывается в ч/б. Если файл не загрузился, карточка просто без картинки.
 - Карты: `data.json → maps` (точки с `ll: [lon, lat]`, `ch`, `lab`). SVG пересобирать после правок координат: `cd tools/maps && npm i && node build.mjs` → `img/map-*.svg`. Тексты легенды берутся из data.json без пересборки.
 - После правок app.js / style.css увеличивай `?v=N` в index.html, иначе телефоны держат старую версию в кэше.
+
+## Методика
+Подход описан на странице [«Как это сделано»](https://samvelkoch.github.io/eastofeden/method.html) (`method.html`) и в двух скиллах для Claude:
+- [`skills/reading-companion-method/SKILL.md`](skills/reading-companion-method/SKILL.md): принципы, не зависят от формата;
+- [`skills/reading-companion-site/SKILL.md`](skills/reading-companion-site/SKILL.md): реализация в виде статического сайта.
