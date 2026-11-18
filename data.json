@@ -6695,7 +6695,10 @@
      "img": {
       "file": "SteinbeckHouse.jpg",
       "cap": "Дом Стейнбеков, Центральный проспект, 130, Салинас.",
-      "credit": "Commons"
+      "credit": "Commons",
+      "license": "CC BY-SA 3.0",
+      "full": "img/w/full/fb6f1988c54f.jpg",
+      "src": "img/w/fb6f1988c54f.jpg"
      }
     }
    ]
@@ -7310,7 +7313,10 @@
      "img": {
       "file": "Massive bird coop covered in pigeons on a pigeon ranch on the Los Angeles River, ca.1900 (CHS-1496).jpg",
       "cap": "Голубиная ферма на реке Лос-Анджелес, около 1900 года.",
-      "credit": "California Historical Society"
+      "credit": "California Historical Society",
+      "license": "Public domain",
+      "full": "img/w/full/980778e7bc47.jpg",
+      "src": "img/w/980778e7bc47.jpg"
      }
     },
     {
@@ -7323,7 +7329,10 @@
      "img": {
       "file": "Ishihara 9.png",
       "cap": "Таблица Исихары: человек без дальтонизма видит цифру 74.",
-      "credit": "Commons"
+      "credit": "Commons",
+      "license": "Public domain",
+      "full": "img/w/full/3e4ca40fa9b4.jpg",
+      "src": "img/w/3e4ca40fa9b4.jpg"
      }
     }
    ]
