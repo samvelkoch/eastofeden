@@ -20,7 +20,7 @@
     D.storylines=(D.storylines||[]).filter(function(L){ return firstLE(L.chapters,R); }).map(function(L){ return {title:L.title,chapters:'гл. '+nums(L.chapters).filter(function(n){ return n<=R; }).join(', '),beats:[],now:'Пересказ линии скрыт, чтобы не раскрыть дальнейшее.'}; });
     if(D.journal){ var J=Object.assign({},D.journal); var fx=function(e){ var c=Object.assign({},e); if(c.r&&!refsOK(c.r,R)) delete c.r; return c; }; J.entries=(J.entries||[]).map(fx).filter(function(e){ return refsOK(e,R); }); J.stories=(J.stories||[]).map(fx).filter(function(e){ return refsOK(e,R); }); D.journal=J; }
     D.profiles=D.profiles.map(function(p){ var c=Object.assign({},p); c.ev=(p.ev||[]).filter(function(e){ return refsOK(e,R); }); return c; });
-    D.debates=[]; D.questions=[]; D.log=[];
+    D.debates=[]; D.questions=[]; D.log=[]; D.finale=null;
     return D;
   }
   window.__eoeGate=gate;
@@ -39,7 +39,7 @@
   (function(){ var b=document.getElementById('pct-btn'), p=document.getElementById('readpos'); function set(v){ p.hidden=!v; b.setAttribute('aria-expanded',v?'true':'false'); }
     b.addEventListener('click',function(e){ e.stopPropagation(); set(p.hidden); }); p.addEventListener('click',function(e){ e.stopPropagation(); });
     document.addEventListener('click',function(){ set(false); }); document.addEventListener('keydown',function(e){ if(e.key==='Escape') set(false); }); })();
-  var pill=document.getElementById('where-pill'); pill.textContent=D.__gated?'Читаю: гл. '+CUR:'Читаю: гл. '+CUR+' · '+D.current.note;
+  var pill=document.getElementById('where-pill'); pill.textContent=D.__gated?'Читаю: гл. '+CUR:(D.finale&&CUR===MAXCH?'Прочитано: все '+MAXCH+' глав':'Читаю: гл. '+CUR+' · '+D.current.note);
   (function(){ var sel=document.getElementById('read-sel'); if(!sel) return; var OWN=D.__owner;
     for(var i=1;i<=OWN;i++){ var o=document.createElement('option'); o.value=String(i); o.textContent=(i===OWN?'гл. '+i+' (как у автора)':'гл. '+i); sel.appendChild(o); }
     sel.value=String(CUR); sel.addEventListener('change',function(){ try{ if(+sel.value>=OWN) localStorage.removeItem('eoe-read'); else localStorage.setItem('eoe-read',sel.value); }catch(e){} location.reload(); });
@@ -90,10 +90,10 @@
     Array.prototype.forEach.call(cpGrid.querySelectorAll('.cp-cell'),function(b,i){ if(i+1===n) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
     document.getElementById('cp-label').textContent='Глава '+n+' из '+TOTAL;
     document.getElementById('cp-prev').disabled=n<=1; document.getElementById('cp-next').disabled=n>=MAXCH;
-    var P=partOf(n); document.getElementById('ch-eyebrow').textContent=(P?P.name+' · ':'')+'Глава '+n+(n===CUR?' · читаю сейчас':'');
+    var P=partOf(n); document.getElementById('ch-eyebrow').textContent=(P?P.name+' · ':'')+'Глава '+n+(n===CUR?(D.finale&&n===MAXCH?' · последняя':' · читаю сейчас'):'');
     document.getElementById('ch-title').textContent=c.title;
     var su=document.getElementById('ch-summary'); su.textContent=''; c.summary.forEach(function(s){ su.appendChild(el('li',null,s)); });
-    var bd=document.getElementById('ch-boundary'); bd.hidden=!(n===CUR); bd.textContent='Дальше этого места дневник не заглядывает: '+D.current.note+'.';
+    var bd=document.getElementById('ch-boundary'); bd.hidden=!(n===CUR); bd.textContent=''; if(D.finale&&n===MAXCH){ bd.appendChild(document.createTextNode('Книга прочитана целиком. ')); var fl=el('a',null,'Итог чтения →'); fl.href='#meanings'; bd.appendChild(fl); } else bd.textContent='Дальше этого места дневник не заглядывает: '+D.current.note+'.';
     var ctx=(D.context||[]).filter(function(x){ return nums(x.ch)[0]===n; })[0];
     var cl=document.getElementById('ch-ctx'); cl.textContent='';
     document.getElementById('ch-ctx-block').hidden=!ctx;
@@ -125,6 +125,9 @@
   renderQuotes();
 
   // MEANINGS view
+  (function(){ var fb=document.getElementById('fin-block'); if(!fb) return; var F=D.finale; if(!F||!F.tags){ fb.hidden=true; return; } fb.hidden=false;
+    document.getElementById('fin-title').textContent=F.title; document.getElementById('fin-lead').textContent=F.lead;
+    var c=document.getElementById('fin-cloud'); c.textContent=''; F.tags.forEach(function(t){ c.appendChild(el('li','tg w'+t[1],t[0])); }); })();
   var mn=document.getElementById('mean'); (D.meanings||[]).forEach(function(x){ mn.appendChild(meaningCard(x)); });
   var db=document.getElementById('deb');
   (D.debates||[]).forEach(function(x){

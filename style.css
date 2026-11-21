@@ -499,3 +499,9 @@ a.doc-card b{font:500 1rem var(--f-mono);overflow-wrap:anywhere}
 a.doc-card:hover,a.doc-card:focus-visible{border-color:var(--ink)}
 .doc code{font:400 .88em var(--f-mono);background:var(--lupine-soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
 .doc-foot{border-top:1px solid var(--rule);padding-top:16px}
+.tagcloud{list-style:none;margin:0;padding:20px 16px;display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:6px 16px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.tagcloud .tg{font-family:var(--f-display);line-height:1.1;color:var(--ink)}
+.tagcloud .w1{font-size:.95rem;color:var(--muted)}
+.tagcloud .w2{font-size:1.2rem}
+.tagcloud .w3{font-size:1.6rem}
+.tagcloud .w4{font-size:2.2rem;font-weight:700;letter-spacing:-.01em}
